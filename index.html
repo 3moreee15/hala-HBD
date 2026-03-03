@@ -67,7 +67,7 @@
       radial-gradient(circle at 80% 20%, rgba(255,190,220,.35), transparent 48%),
       radial-gradient(circle at 30% 85%, rgba(255,255,255,.28), transparent 45%),
       radial-gradient(circle at 85% 80%, rgba(255,120,200,.28), transparent 48%);
-    filter: blur(26px) saturate(1.1);
+    /* شيلنا البلور نهائياً */
     animation: auroraMove 14s ease-in-out infinite alternate;
   }
   @keyframes auroraMove{
@@ -104,7 +104,7 @@
     text-align:center;
     box-shadow: var(--shadow);
     position:relative;
-    backdrop-filter: blur(10px);
+    /* شيلنا البلور نهائياً */
     z-index:2;
     border: 1px solid rgba(255,255,255,.55);
     transform-style: preserve-3d;
@@ -139,7 +139,7 @@
   .pillBtn{
     border:1px solid var(--border);
     background: rgba(255,255,255,.80);
-    backdrop-filter: blur(10px);
+    /* شيلنا البلور نهائياً */
     border-radius: 999px;
     padding: 10px 12px;
     font-weight: 950;
@@ -209,7 +209,7 @@
     padding:6px 8px; border-radius:999px;
     background:#ffffffb0;
     border:1px solid var(--border);
-    backdrop-filter:blur(6px);
+    /* شيلنا البلور نهائياً */
   }
   .dot{ width:7px; height:7px; border-radius:50%; background:#ffb7da; opacity:.75; cursor:pointer; transition:transform .2s ease, opacity .2s ease, background .2s ease; }
   .dot.active{ background:var(--accent); opacity:1; transform:scale(1.25); }
@@ -276,6 +276,37 @@
     display:grid; place-items:center;
     box-shadow:0 10px 18px rgba(255,79,163,.25);
     color:#fff; font-size:18px;
+  }
+
+  /* NEW: قلب يتغير لونه ثواني */
+  .heartBtn.pressed{
+    transform: scale(.98);
+    filter: saturate(1.15);
+  }
+  .heartBtn.pressed .heartIcon{
+    background: linear-gradient(135deg, #00c2a8, #67e6d2) !important;
+  }
+
+  /* NEW: input age */
+  .ageWrap{
+    width:min(320px, 92%);
+    margin:0 auto;
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .ageInput{
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    font-weight: 950;
+    font-size: 16px;
+    outline: none;
+    text-align: center;
+    background: #fff;
   }
 
   /* ===== Gift ===== */
@@ -386,7 +417,7 @@
   .sheetOverlay{
     position:fixed; inset:0; z-index:9997;
     background: rgba(0,0,0,.28);
-    backdrop-filter: blur(6px);
+    /* شيلنا البلور نهائياً */
     opacity:0; pointer-events:none;
     transition: opacity .22s ease;
   }
@@ -490,6 +521,12 @@
     border-color: rgba(255,255,255,.10);
   }
   body.dark .sheetTitle{ opacity:1; }
+
+  body.dark .ageInput{
+    background: rgba(20, 14, 22, .72);
+    color: #f7eaf1;
+    border-color: rgba(255,255,255,.12);
+  }
 </style>
 </head>
 
@@ -587,12 +624,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const card = $("card");
   const toast = $("toast");
 
-  function showToast(text){
+  function showToast(text, dur=1400){
     if(!toast) return;
     toast.textContent = text;
     toast.style.display = "block";
     clearTimeout(showToast._t);
-    showToast._t = setTimeout(()=>toast.style.display="none", 1400);
+    showToast._t = setTimeout(()=>toast.style.display="none", dur);
   }
 
   // ===== التاريخ =====
@@ -689,7 +726,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===== Confetti =====
   function burst(){
     const symbols=["💗","✨","🎀","🌸","🎂","💞","⭐️"];
-    for(let i=0;i<28;i++){
+    for(let i=0;i<16;i++){
       const s=document.createElement("div");
       s.className="confetti";
       s.textContent=symbols[Math.floor(Math.random()*symbols.length)];
@@ -709,7 +746,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // ===== قلوب الكارد (تصحيح مهم: تجاهل الأزرار والشيت) =====
+  // ===== قلوب الكارد (تجاهل الأزرار والشيت) =====
   if(card){
     card.addEventListener("click",(e)=>{
       if (e.target && e.target.closest("button, .sheet, .sheetOverlay")) return;
@@ -749,6 +786,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const steps = [
     { q: "🤨 انتي حلا؟", btn: { type:"normal", text:"اي حلا" } },
     { q: "🧐 عندي الك سؤال", btn: { type:"normal", text:"اي شو هو؟" } },
+
+    // NEW: age question
+    { q: " كم عمرك يا حلا؟", btn: { type:"age" } },
+
     { q: "🔥 بتحبي عمر ولا لا؟", btn: { type:"normal", text:"هاااااا؟" } },
     { q: "😾 شو هااااا بتحبي عمر ولا لا؟", btn: { type:"escape", text:"ما بعرف" } },
     { q: "لو بتحبي عمر اضغطي على القلب 💗", btn: { type:"heart" } }
@@ -778,6 +819,49 @@ document.addEventListener("DOMContentLoaded", () => {
           renderStep();
         });
       }
+      return;
+    }
+
+    // NEW: Age step
+    if(s.btn.type === "age"){
+      qSmall.textContent = "";
+      answerArea.innerHTML = `
+        <div class="ageWrap">
+          <input class="ageInput" id="ageInput" inputmode="numeric" placeholder= >
+          <button class="btn primary qBtn" id="ageOk">تأكيد</button>
+        </div>
+      `;
+
+      const ageInput = $("ageInput");
+      const ageOk = $("ageOk");
+
+      const normalizeDigits = (str) => (str || "")
+        .replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d))
+        .trim();
+
+      function checkAge(){
+        const v = normalizeDigits(ageInput?.value);
+        if(v === "18"){
+          burst();
+          showToast("اووووووه القمر عرف حاله شطوووووووورة 🫰🏻💞", 4500);
+          // نخلي الرسالة تظهر 4.5 ثواني قبل ما نروح للسؤال اللي بعده
+          setTimeout(()=>{
+            stepIndex++;
+            renderStep();
+          }, 4500);
+        }else{
+          beep("escape");
+          showToast("خطأ احد بينسى عمره؟😼", 5000);
+          if(ageInput){
+            ageInput.value = "";
+            ageInput.focus();
+          }
+        }
+      }
+
+      ageOk?.addEventListener("click", checkAge);
+      ageInput?.addEventListener("keydown", (e)=>{ if(e.key === "Enter") checkAge(); });
+      setTimeout(()=> ageInput?.focus(), 50);
       return;
     }
 
@@ -819,7 +903,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         randomMove();
 
-        if(escapeTries >= 6){
+        if(escapeTries >= 3){
           qSmall.textContent = "خلاص خلاص… استسلمت 🫢 اضغطيه مرّة أخيرة";
           escapeBtn.textContent = "طيب… كملي 😼";
           escapeBtn.onclick = ()=>{
@@ -851,14 +935,21 @@ document.addEventListener("DOMContentLoaded", () => {
         heartBtn.addEventListener("click", ()=>{
           beep("heart");
           burst();
-          const quizBox = $("quizBox");
-          const giftBox = $("giftBox");
-          const giftText = $("giftText");
-          if(quizBox) quizBox.style.display = "none";
-          if(giftBox) giftBox.style.display = "block";
-          if(giftText) typeWriter(giftText, message, 12);
-          showToast("وصلتي للتهنئة 💖");
-          giftBox?.scrollIntoView({behavior:"smooth", block:"start"});
+
+          // يتغير لونه 1.2 ثانية بعدين تطلع التهنئة
+          heartBtn.classList.add("pressed");
+          showToast("لحظة... 💗");
+
+          setTimeout(()=>{
+            const quizBox = $("quizBox");
+            const giftBox = $("giftBox");
+            const giftText = $("giftText");
+            if(quizBox) quizBox.style.display = "none";
+            if(giftBox) giftBox.style.display = "block";
+            if(giftText) typeWriter(giftText, message, 12);
+            showToast("وصلتي للتهنئة 💖");
+            giftBox?.scrollIntoView({behavior:"smooth", block:"start"});
+          }, 1200);
         });
       }
       return;
@@ -967,7 +1058,7 @@ document.addEventListener("DOMContentLoaded", () => {
       b.style.fontSize = (14 + Math.random()*18).toFixed(0) + "px";
       document.body.appendChild(b);
       setTimeout(()=> b.remove(), 14000);
-    }, 650);
+    }, 1400);
   })();
 
   // ===== Themes =====
@@ -1073,7 +1164,7 @@ document.addEventListener("DOMContentLoaded", () => {
     resize();
 
     const shapes = ["✨","💗","⭐️","🎀","🌸"];
-    const N = 34;
+    const N = 18;
     const ps = Array.from({length:N}, ()=>({
       x: Math.random()*w,
       y: Math.random()*h,
