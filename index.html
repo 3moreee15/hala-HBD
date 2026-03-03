@@ -1618,9 +1618,13 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.strokeStyle=lg; ctx.lineWidth=1.5; ctx.stroke();
 
         // العمر
-        const now2=new Date(), b2=new Date("2008-04-28T00:00:00");
-        let yrs2=now2.getFullYear()-b2.getFullYear();
-        if(now2<new Date(now2.getFullYear(),b2.getMonth(),b2.getDate())) yrs2--;
+        // حساب دقيق — يحسب العمر الكامل بالميلادي مع مراعاة اليوم والشهر
+        const now2  = new Date();
+        const b2    = new Date("2008-04-28T00:00:00");
+        let yrs2    = now2.getFullYear() - b2.getFullYear();
+        const hadBday = (now2.getMonth() > b2.getMonth()) ||
+                        (now2.getMonth() === b2.getMonth() && now2.getDate() >= b2.getDate());
+        if(!hadBday) yrs2--;
 
         ctx.font="bold 88px 'Segoe UI', system-ui, Arial";
         ctx.fillStyle="#ff4fa3";
