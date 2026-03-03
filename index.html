@@ -4,23 +4,26 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>حلا | 18 🎀</title>
-
 <link rel="icon" type="image/png" href="icon.png">
 
 <style>
+  /* =========================
+     0) أساس + متغيرات ثيم
+  ========================= */
   :root{
+    /* ثيم افتراضي (وردي) */
     --bg1:#ffb6d5; --bg2:#ffd6ea;
-    --pink:#ff4fa3; --pink2:#ff7fc3;
-    --text:#3b2b2f;
+    --accent:#ff4fa3; --accent2:#ff7fc3;
     --border:#ffd1e7;
+    --text:#3b2b2f;
 
     /* جماليات */
     --glass: rgba(255,255,255,.86);
     --shadow: 0 18px 55px rgba(0,0,0,.14);
     --shadow2: 0 12px 30px rgba(255,79,163,.20);
   }
-  *{ box-sizing:border-box; }
 
+  *{ box-sizing:border-box; }
   html{ scroll-behavior:smooth; }
 
   body{
@@ -30,14 +33,53 @@
     min-height:100vh;
     overflow-x:hidden;
     overflow-y:auto;
-    padding: clamp(18px, 4vh, 42px) 0;
     color:var(--text);
     display:flex;
     justify-content:center;
     align-items:flex-start;
+
+    /* Safe area للجوال */
+    padding: clamp(18px, 4vh, 42px) 0;
+    padding-bottom: calc(18px + env(safe-area-inset-bottom));
+    padding-top: calc(18px + env(safe-area-inset-top));
   }
 
-  /* Aurora خلفية */
+  /* تقليل الحركة للي يفضّل ذلك */
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; }
+  }
+
+  /* =========================
+     1) خلفيات طبقات (Particles + Grid + Noise + Aurora + Sparkle + Wave)
+  ========================= */
+  #particles{
+    position:fixed; inset:0;
+    z-index:0;
+    pointer-events:none;
+    opacity:.9;
+  }
+
+  .bgGrid{
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,.12) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,.10) 1px, transparent 1px);
+    background-size: 34px 34px;
+    opacity:.35;
+    pointer-events:none;
+    z-index:0;
+    mix-blend-mode: overlay;
+  }
+
+  .bgNoise{
+    position:fixed; inset:0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+    opacity:.18;
+    pointer-events:none;
+    z-index:0;
+    mix-blend-mode: soft-light;
+  }
+
   .aurora{
     position:fixed; inset:-20%;
     background:
@@ -68,6 +110,24 @@
   }
   @keyframes float{ from{transform:translateY(0)} to{transform:translateY(-40px)} }
 
+  .waveWrap{
+    position:fixed;
+    left:0; right:0; bottom:-2px;
+    height:180px;
+    z-index:0;
+    pointer-events:none;
+    opacity:.9;
+  }
+  .waveWrap svg{
+    width:100%;
+    height:100%;
+    display:block;
+    filter: drop-shadow(0 -14px 32px rgba(255,79,163,.20));
+  }
+
+  /* =========================
+     2) البطاقة + لمعة + Reveal + Tilt
+  ========================= */
   .card{
     width: min(92vw, 720px);
     background: var(--glass);
@@ -77,13 +137,13 @@
     box-shadow: var(--shadow);
     position:relative;
     backdrop-filter: blur(10px);
-    z-index:1;
+    z-index:2;
     border: 1px solid rgba(255,255,255,.55);
     transform-style: preserve-3d;
     transition: transform .12s ease;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  /* لمعة تمر على البطاقة */
   .card::before{
     content:"";
     position:absolute; inset:-2px;
@@ -99,7 +159,19 @@
     100%{ transform: translateX(120%); opacity:0; }
   }
 
-  /* شريط التحكم */
+  .reveal{
+    opacity:0;
+    transform: translateY(14px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal.show{
+    opacity:1;
+    transform: translateY(0);
+  }
+
+  /* =========================
+     3) شريط التحكم (أعلى البطاقة)
+  ========================= */
   .topControls{
     position: sticky;
     top: 10px;
@@ -119,9 +191,14 @@
     cursor:pointer;
     box-shadow: 0 10px 22px rgba(0,0,0,.10);
     transition: transform .12s ease, filter .2s ease;
+    user-select:none;
+    -webkit-tap-highlight-color: transparent;
   }
   .pillBtn:active{ transform: scale(.98); }
 
+  /* =========================
+     4) بادجات + عنوان + أيقونة
+  ========================= */
   .badges{
     display:flex; gap:10px;
     justify-content:space-between; align-items:center;
@@ -137,7 +214,6 @@
     font-size: 13px;
   }
 
-  /* عنوان + صورة + Glow + دوران */
   .title{
     margin:10px 0 6px;
     font-size: clamp(20px, 2.6vw, 28px);
@@ -175,7 +251,9 @@
     font-size: clamp(13px, 1.7vw, 15px);
   }
 
-  /* Fade Slider */
+  /* =========================
+     5) سلايدر صور (Fade + dots + swipe)
+  ========================= */
   .fadeSlider{
     width: min(72vw, 210px);
     aspect-ratio: 1 / 1;
@@ -214,7 +292,7 @@
     background:#ffb7da; opacity:.75; cursor:pointer;
     transition:transform .2s ease, opacity .2s ease, background .2s ease;
   }
-  .dot.active{ background:var(--pink); opacity:1; transform:scale(1.25); }
+  .dot.active{ background:var(--accent); opacity:1; transform:scale(1.25); }
 
   .fileNote{
     margin-top:6px;
@@ -223,13 +301,15 @@
     line-height:1.7;
   }
 
+  /* =========================
+     6) الأزرار الرئيسية
+  ========================= */
   .actions{
     display:flex;
     gap:10px;
     flex-wrap:wrap;
     margin-top:10px;
   }
-
   .btn{
     flex:1;
     border:none;
@@ -239,19 +319,23 @@
     cursor:pointer;
     font-size:15px;
     transition: transform .12s ease;
+    user-select:none;
+    -webkit-tap-highlight-color: transparent;
   }
   .btn.primary{
-    background:linear-gradient(135deg,var(--pink),var(--pink2));
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
     color:white;
   }
   .btn.secondary{
     background:#fff;
-    color:var(--pink);
+    color:var(--accent);
     border:1px solid var(--border);
   }
   .btn:active{ transform:scale(0.99); }
 
-  /* Quiz */
+  /* =========================
+     7) Quiz
+  ========================= */
   .quiz{
     margin-top:14px;
     text-align:center;
@@ -267,7 +351,7 @@
     position:absolute;
     top:12px;
     left:14px;
-    background:linear-gradient(135deg,var(--pink),var(--pink2));
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
     color:#fff;
     padding:6px 10px;
     border-radius:999px;
@@ -291,7 +375,6 @@
     margin:0 auto;
   }
 
-  /* زر يهرب */
   .moveArea{
     position:relative;
     height:74px;
@@ -305,7 +388,6 @@
     width:min(320px, 92%);
   }
 
-  /* قلب */
   .heartBtn{
     display:inline-flex;
     align-items:center;
@@ -321,19 +403,22 @@
     user-select:none;
     transition: transform .12s ease, filter .2s ease;
     margin:0 auto;
+    -webkit-tap-highlight-color: transparent;
   }
   .heartBtn:active{ transform:scale(0.98); }
   .heartIcon{
     width:34px; height:34px;
     border-radius:999px;
-    background:linear-gradient(135deg,var(--pink),var(--pink2));
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
     display:grid; place-items:center;
     box-shadow:0 10px 18px rgba(255,79,163,.25);
     color:#fff;
     font-size:18px;
   }
 
-  /* Gift */
+  /* =========================
+     8) Gift + Typewriter
+  ========================= */
   .gift{
     display:none;
     margin-top:14px;
@@ -352,7 +437,7 @@
   .ribbon{
     position:absolute;
     top:-10px; left:18px;
-    background:linear-gradient(135deg,var(--pink),var(--pink2));
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
     color:#fff;
     padding:6px 10px;
     border-radius:999px;
@@ -360,9 +445,8 @@
     box-shadow:0 10px 18px rgba(255,79,163,.22);
     font-size:12px;
   }
-
   .typed{
-    border-left: 2px solid var(--pink);
+    border-left: 2px solid var(--accent);
     padding-left:6px;
     animation: caret .9s steps(1) infinite;
   }
@@ -422,17 +506,6 @@
     line-height:1.7;
   }
 
-  /* Reveal */
-  .reveal{
-    opacity:0;
-    transform: translateY(14px);
-    transition: opacity .7s ease, transform .7s ease;
-  }
-  .reveal.show{
-    opacity:1;
-    transform: translateY(0);
-  }
-
   /* فقاعات خلفية */
   .bubble{
     position:fixed;
@@ -450,17 +523,152 @@
     to{ transform: translateY(-115vh) translateX(var(--drift)) scale(1.2); opacity:0; }
   }
 
-  /* وضع داكن */
+  /* =========================
+     9) Bottom Sheet الثيمات + FAB للجوال
+  ========================= */
+  .fabTheme{
+    position:fixed;
+    right: 14px;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    z-index:9996;
+    border:none;
+    border-radius: 999px;
+    padding: 12px 14px;
+    font-weight: 950;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color:#fff;
+    box-shadow: 0 14px 30px rgba(0,0,0,.18);
+    cursor:pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  @media (min-width: 900px){
+    .fabTheme{ display:none; }
+  }
+
+  .sheetOverlay{
+    position:fixed; inset:0;
+    background: rgba(0,0,0,.28);
+    backdrop-filter: blur(6px);
+    opacity:0; pointer-events:none;
+    transition: opacity .22s ease;
+    z-index:9997;
+  }
+  .sheetOverlay.show{ opacity:1; pointer-events:auto; }
+
+  .sheet{
+    position:fixed;
+    left:50%;
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    transform: translateX(-50%) translateY(120%);
+    width: min(92vw, 520px);
+    background: rgba(255,255,255,.88);
+    border: 1px solid rgba(255,255,255,.55);
+    border-radius: 22px;
+    box-shadow: 0 18px 60px rgba(0,0,0,.18);
+    transition: transform .28s cubic-bezier(.2,.9,.2,1);
+    z-index:9998;
+    overflow:hidden;
+  }
+  .sheet.show{ transform: translateX(-50%) translateY(0); }
+
+  .sheetHandle{
+    width: 42px; height: 5px;
+    border-radius: 999px;
+    background: rgba(0,0,0,.12);
+    margin: 10px auto 0;
+  }
+  .sheetHeader{
+    padding: 12px 14px 8px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+  }
+  .sheetTitle{
+    font-weight: 950;
+    font-size: 14px;
+    opacity:.9;
+  }
+  .sheetClose{
+    border:1px solid var(--border);
+    background: rgba(255,255,255,.8);
+    border-radius: 999px;
+    padding: 8px 10px;
+    font-weight: 900;
+    cursor:pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .themeGrid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:10px;
+    padding: 10px 14px 14px;
+  }
+  .themeBtn{
+    border:1px solid rgba(0,0,0,.06);
+    background: rgba(255,255,255,.75);
+    border-radius: 16px;
+    padding: 10px 10px;
+    cursor:pointer;
+    text-align:center;
+    box-shadow: 0 10px 22px rgba(0,0,0,.08);
+    transition: transform .12s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .themeBtn:active{ transform: scale(.98); }
+  .themeSwatch{
+    height: 34px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    border:1px solid rgba(255,255,255,.45);
+  }
+  .themeName{
+    font-weight: 950;
+    font-size: 13px;
+  }
+
+  /* =========================
+     10) Mobile tweaks
+  ========================= */
+  @media (max-width: 520px){
+    .btn{ font-size:16px; padding:14px 16px; border-radius:16px; }
+    .pillBtn{ padding:12px 14px; }
+    .card{ width: min(94vw, 720px); }
+    .fadeSlider{ width: min(82vw, 240px); }
+    .qText{ font-size: 17px; }
+  }
+
+  /* Tap pulse */
+  .tapPulse{
+    position:fixed;
+    width:12px; height:12px;
+    border-radius:999px;
+    background: rgba(255,79,163,.45);
+    transform: translate(-50%, -50%);
+    animation: pulse 520ms ease forwards;
+    pointer-events:none;
+    z-index:9998;
+  }
+  @keyframes pulse{
+    from{ opacity:.9; width:10px; height:10px; }
+    to{ opacity:0; width:80px; height:80px; }
+  }
+
+  /* =========================
+     11) Dark mode (متوافق مع الثيمات)
+  ========================= */
   body.dark{
-    background: linear-gradient(135deg, #1b1320, #2a1a2f);
-    color: #f7eaf1;
+    --text: #f7eaf1;
+    --glass: rgba(30, 20, 30, .74);
   }
   body.dark .sparkle{ opacity:.25; }
   body.dark .aurora{ opacity:.55; }
-  body.dark .card{
-    background: rgba(30, 20, 30, .74);
-    border: 1px solid rgba(255,255,255,.12);
-  }
+  body.dark #particles{ opacity:.55; }
+  body.dark .bgGrid{ opacity:.18; }
+  body.dark .bgNoise{ opacity:.12; }
+  body.dark .waveWrap{ opacity:.55; }
+
   body.dark .badge,
   body.dark .quiz,
   body.dark .gift,
@@ -472,19 +680,45 @@
   }
   body.dark .btn.secondary{
     background: rgba(20, 14, 22, .72);
-    color: #ff9dd1;
+    color: #ffd0ea;
   }
+  body.dark .sheet{
+    background: rgba(25, 18, 28, .86);
+    border-color: rgba(255,255,255,.12);
+  }
+  body.dark .themeBtn{
+    background: rgba(20, 14, 22, .72);
+    border-color: rgba(255,255,255,.10);
+  }
+  body.dark .sheetTitle{ opacity:1; }
 </style>
 </head>
 
 <body>
+  <!-- طبقات الخلفية -->
+  <canvas id="particles"></canvas>
+  <div class="bgGrid"></div>
+  <div class="bgNoise"></div>
   <div class="aurora"></div>
   <div class="sparkle"></div>
 
+  <div class="waveWrap" aria-hidden="true">
+    <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
+      <path fill="rgba(255,255,255,0.55)"
+        d="M0,224L60,213.3C120,203,240,181,360,176C480,171,600,181,720,192C840,203,960,213,1080,197.3C1200,181,1320,139,1380,117.3L1440,96L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z">
+      </path>
+      <path fill="rgba(255,79,163,0.12)"
+        d="M0,256L80,250.7C160,245,320,235,480,234.7C640,235,800,245,960,224C1120,203,1280,149,1360,122.7L1440,96L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z">
+      </path>
+    </svg>
+  </div>
+
+  <!-- البطاقة -->
   <div class="card" id="card">
     <div class="topControls">
       <button class="pillBtn" id="toggleTheme">🌙 الوضع</button>
       <button class="pillBtn" id="toggleSound">🔊 الصوت</button>
+      <button class="pillBtn" id="openThemesTop">🎨 ثيمات</button>
     </div>
 
     <div class="badges">
@@ -537,8 +771,30 @@
 
   <div class="toast" id="toast">تم ✅</div>
 
+  <!-- زر للجوال لفتح الثيمات -->
+  <button class="fabTheme" id="openThemes">🎨 ثيمات</button>
+
+  <!-- Bottom Sheet -->
+  <div class="sheetOverlay" id="sheetOverlay"></div>
+  <div class="sheet" id="themeSheet" role="dialog" aria-modal="true" aria-label="اختيار الثيم">
+    <div class="sheetHandle"></div>
+    <div class="sheetHeader">
+      <div class="sheetTitle">اختار الثيم اللي يعجبك ✨</div>
+      <button class="sheetClose" id="closeThemes">إغلاق</button>
+    </div>
+    <div class="themeGrid" id="themeGrid"></div>
+  </div>
+
 <script>
   const $ = (id)=>document.getElementById(id);
+
+  /* منع قلوب البطاقة لما تضغط أزرار/الشيت */
+  document.addEventListener("click", (e)=>{
+    const t = e.target;
+    if(!t) return;
+    const isBtn = t.closest && (t.closest("button") || t.closest(".sheet") || t.closest(".sheetOverlay"));
+    if(isBtn) e.stopPropagation();
+  }, true);
 
   // التاريخ
   const now = new Date();
@@ -552,7 +808,6 @@
 وأتمنى ربي يحقق لك كل أمنياتك وحدة وحدة بدون ما ينقصها شي 🤍✨
 وأتمنى ضحكتك تبقى عالية مثل اليوم وكل أيامك تكون مليانة راحة واطمئنان 🌸
 يا رب تكون سنة نضج أجمل، نجاح أكبر، وأحلام تتحقق قدام عيونك 🎂💖
-وتكون بداية عشريناتك بداية قوة وثقة وإنجازات تخليني أفتخر فيك أكثر وأكثر 💞
 وكل سنة تكبرين قدامي وأقول الحمدلله إنك في حياتي 🌷✨
 `;
 
@@ -564,10 +819,11 @@
     showToast._t = setTimeout(()=>t.style.display="none", 1400);
   }
 
-  // تحكم الصوت
+  /* =========================
+     1) صوت + كتم + داكن
+  ========================= */
   let soundOn = true;
 
-  // Beep لطيف (يحترم كتم الصوت)
   let audioCtx = null;
   function beep(type = "escape"){
     if(!soundOn) return;
@@ -596,6 +852,20 @@
     }catch(e){}
   }
 
+  $("toggleSound").addEventListener("click", ()=>{
+    soundOn = !soundOn;
+    $("toggleSound").textContent = soundOn ? "🔊 الصوت" : "🔇 كتم";
+    showToast(soundOn ? "الصوت شغال 🔊" : "تم الكتم 🔇");
+  });
+
+  $("toggleTheme").addEventListener("click", ()=>{
+    document.body.classList.toggle("dark");
+    showToast(document.body.classList.contains("dark") ? "وضع داكن 🌙" : "وضع فاتح ☀️");
+  });
+
+  /* =========================
+     2) Typewriter + Effects
+  ========================= */
   function typeWriter(el, text, speed=14){
     el.classList.add("typed");
     el.textContent = "";
@@ -658,19 +928,9 @@
     }
   });
 
-  // أزرار التحكم
-  $("toggleSound").addEventListener("click", ()=>{
-    soundOn = !soundOn;
-    $("toggleSound").textContent = soundOn ? "🔊 الصوت" : "🔇 كتم";
-    showToast(soundOn ? "الصوت شغال 🔊" : "تم الكتم 🔇");
-  });
-
-  $("toggleTheme").addEventListener("click", ()=>{
-    document.body.classList.toggle("dark");
-    showToast(document.body.classList.contains("dark") ? "وضع داكن 🌙" : "وضع فاتح ☀️");
-  });
-
-  // ===== الأسئلة + زر يهرب =====
+  /* =========================
+     3) Quiz Logic
+  ========================= */
   const steps = [
     { q: "🤨 انتي حلا؟", btn: { type:"normal", text:"اي حلا" } },
     { q: "🧐 عندي الك سؤال", btn: { type:"normal", text:"اي شو هو؟" } },
@@ -786,10 +1046,11 @@
       return;
     }
   }
-
   renderStep();
 
-  // ===== Fade Slider Logic =====
+  /* =========================
+     4) Fade Slider Logic + Swipe
+  ========================= */
   const slider = $("fadeSlider");
   const slides = Array.from(slider.querySelectorAll(".fadeSlide"));
   const dotsEl = $("dots");
@@ -827,9 +1088,7 @@
   buildDots();
   startAuto();
 
-  // Swipe للجوال
   let startX = 0, deltaX = 0, dragging = false;
-
   slider.addEventListener("touchstart", (e)=>{
     dragging = true;
     startX = e.touches[0].clientX;
@@ -851,12 +1110,17 @@
     else restartAuto();
 
     deltaX = 0;
+
+    // هزة بسيطة (إن وجدت)
+    try{ if(navigator.vibrate) navigator.vibrate(8); }catch(e){}
   }, {passive:true});
 
   slider.addEventListener("mouseenter", stopAuto);
   slider.addEventListener("mouseleave", startAuto);
 
-  // ===== Tilt بسيط للبطاقة =====
+  /* =========================
+     5) Tilt + Reveal
+  ========================= */
   (function tiltCard(){
     const card = $("card");
     card.addEventListener("mousemove", (e)=>{
@@ -872,7 +1136,6 @@
     });
   })();
 
-  // ===== Reveal عند الظهور =====
   (function reveal(){
     const els = document.querySelectorAll(".badges, .title, .sub, .fadeSlider, .actions, .quiz, .gift, .hint");
     els.forEach(el=> el.classList.add("reveal"));
@@ -886,7 +1149,9 @@
     els.forEach(el=> io.observe(el));
   })();
 
-  // ===== فقاعات خلفية =====
+  /* =========================
+     6) فقاعات خلفية
+  ========================= */
   (function bubbles(){
     const icons = ["✨","💗","🎀","⭐️","🌸"];
     setInterval(()=>{
@@ -900,6 +1165,191 @@
       document.body.appendChild(b);
       setTimeout(()=> b.remove(), 14000);
     }, 650);
+  })();
+
+  /* =========================
+     7) Mobile UX: Tap pulse + Haptic
+  ========================= */
+  function vibrate(ms=18){
+    try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
+  }
+
+  window.addEventListener("pointerdown", (e)=>{
+    const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : "";
+    if(["button","a","input"].includes(tag)) vibrate(12);
+
+    const p = document.createElement("div");
+    p.className = "tapPulse";
+    p.style.left = e.clientX + "px";
+    p.style.top  = e.clientY + "px";
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(), 520);
+  }, {passive:true});
+
+  /* =========================
+     8) Theme System + Bottom Sheet
+  ========================= */
+  const THEMES = [
+    { id:"pink",     name:"وردي",       bg1:"#ffb6d5", bg2:"#ffd6ea", accent:"#ff4fa3", accent2:"#ff7fc3", border:"#ffd1e7" },
+    { id:"purple",   name:"بنفسجي",     bg1:"#cbb7ff", bg2:"#f2d7ff", accent:"#7b4dff", accent2:"#b27cff", border:"#e4d5ff" },
+    { id:"sky",      name:"أزرق سماوي", bg1:"#a9e9ff", bg2:"#e3fbff", accent:"#00a8ff", accent2:"#6bd6ff", border:"#bfefff" },
+    { id:"roseGold", name:"روز قولد",   bg1:"#ffd0c7", bg2:"#fff1e8", accent:"#ff6a7a", accent2:"#ffb08a", border:"#ffe0d7" },
+    { id:"mint",     name:"نعناعي",     bg1:"#bff7e6", bg2:"#eafff8", accent:"#00c2a8", accent2:"#67e6d2", border:"#c9fff0" },
+    { id:"nightBlue",name:"ليلي أزرق",  bg1:"#2b3a67", bg2:"#1b1d3a", accent:"#5da9ff", accent2:"#9b7dff", border:"#3d4a86" }
+  ];
+
+  function applyTheme(t){
+    const r = document.documentElement.style;
+    r.setProperty("--bg1", t.bg1);
+    r.setProperty("--bg2", t.bg2);
+    r.setProperty("--accent", t.accent);
+    r.setProperty("--accent2", t.accent2);
+    r.setProperty("--border", t.border);
+
+    // لو ثيم ليلي قوي، فعل الداكن تلقائيًا (اختياري)
+    if(t.id === "nightBlue" && !document.body.classList.contains("dark")){
+      document.body.classList.add("dark");
+    }
+
+    localStorage.setItem("theme_id", t.id);
+    showToast("تم اختيار ثيم: " + t.name + " ✅");
+    vibrate(24);
+  }
+
+  // بناء شبكة الثيمات
+  (function buildThemeGrid(){
+    const grid = $("themeGrid");
+    grid.innerHTML = "";
+    THEMES.forEach(t=>{
+      const btn = document.createElement("button");
+      btn.className = "themeBtn";
+      btn.type = "button";
+      btn.innerHTML = `
+        <div class="themeSwatch" style="background: linear-gradient(135deg, ${t.bg1}, ${t.bg2});"></div>
+        <div class="themeName">${t.name}</div>
+      `;
+      btn.addEventListener("click", ()=> applyTheme(t));
+      grid.appendChild(btn);
+    });
+
+    const saved = localStorage.getItem("theme_id");
+    const found = THEMES.find(x=>x.id===saved);
+    if(found) applyTheme(found);
+  })();
+
+  // Sheet open/close + drag down
+  const overlay = $("sheetOverlay");
+  const sheet   = $("themeSheet");
+  const openBtn = $("openThemes");
+  const openTop = $("openThemesTop");
+  const closeBtn= $("closeThemes");
+
+  function openSheet(){
+    overlay.classList.add("show");
+    sheet.classList.add("show");
+    vibrate(18);
+  }
+  function closeSheet(){
+    overlay.classList.remove("show");
+    sheet.classList.remove("show");
+    vibrate(10);
+  }
+
+  openBtn.addEventListener("click", openSheet);
+  openTop.addEventListener("click", openSheet);
+  closeBtn.addEventListener("click", closeSheet);
+  overlay.addEventListener("click", closeSheet);
+
+  (function dragToClose(){
+    let startY = 0;
+    let curY = 0;
+    let dragging = false;
+
+    sheet.addEventListener("touchstart", (e)=>{
+      dragging = true;
+      startY = e.touches[0].clientY;
+      curY = 0;
+    }, {passive:true});
+
+    sheet.addEventListener("touchmove", (e)=>{
+      if(!dragging) return;
+      const y = e.touches[0].clientY;
+      curY = Math.max(0, y - startY);
+      sheet.style.transform = `translateX(-50%) translateY(${curY}px)`;
+    }, {passive:true});
+
+    sheet.addEventListener("touchend", ()=>{
+      dragging = false;
+      if(curY > 90){
+        sheet.style.transform = "";
+        closeSheet();
+        return;
+      }
+      sheet.style.transform = "";
+    }, {passive:true});
+  })();
+
+  /* =========================
+     9) Particles Canvas (Parallax)
+  ========================= */
+  (function particles(){
+    const c = $("particles");
+    const ctx = c.getContext("2d", { alpha:true });
+
+    let w=0,h=0,dpr=1;
+    function resize(){
+      dpr = window.devicePixelRatio || 1;
+      w = c.width = Math.floor(window.innerWidth * dpr);
+      h = c.height = Math.floor(window.innerHeight * dpr);
+      c.style.width = window.innerWidth + "px";
+      c.style.height = window.innerHeight + "px";
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    const shapes = ["✨","💗","⭐️","🎀","🌸"];
+    const N = 38;
+    const ps = Array.from({length:N}, ()=>({
+      x: Math.random()*w,
+      y: Math.random()*h,
+      r: (10 + Math.random()*18) * dpr,
+      s: (0.25 + Math.random()*0.7) * dpr,
+      a: 0.45 + Math.random()*0.35,
+      t: shapes[(Math.random()*shapes.length)|0],
+      drift: (Math.random()*0.6 - 0.3) * dpr
+    }));
+
+    let mx = 0, my = 0;
+    window.addEventListener("mousemove", (e)=>{
+      mx = (e.clientX / window.innerWidth  - 0.5) * 2;
+      my = (e.clientY / window.innerHeight - 0.5) * 2;
+    }, {passive:true});
+
+    function draw(){
+      ctx.clearRect(0,0,w,h);
+
+      for(const p of ps){
+        p.y -= p.s;
+        p.x += p.drift;
+
+        const px = p.x + mx * 18 * dpr;
+        const py = p.y + my * 12 * dpr;
+
+        if(p.y < -60*dpr){ p.y = h + 60*dpr; p.x = Math.random()*w; }
+        if(p.x < -60*dpr) p.x = w + 60*dpr;
+        if(p.x > w + 60*dpr) p.x = -60*dpr;
+
+        ctx.globalAlpha = p.a;
+        ctx.font = `${p.r}px system-ui, Arial`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(p.t, px, py);
+      }
+
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(draw);
+    }
+    draw();
   })();
 </script>
 
