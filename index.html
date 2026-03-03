@@ -597,34 +597,36 @@
     margin-top: 4px;
   }
   .audioBar{
-    height: 6px;
-    background: rgba(0,0,0,.25);
+    height: 5px;
+    background: rgba(0,0,0,.18);
     border-radius: 999px;
     cursor: pointer;
     position: relative;
     overflow: visible;
-    margin: 8px 0;
+    margin: 10px 0;
   }
   .audioBarFill{
-    height: 100%;
+    display: block;
+    height: 5px;
     width: 0%;
     border-radius: 999px;
-    background: #222;
+    background: #111;
     transition: width .25s linear;
     pointer-events: none;
-    position: relative;
+    position: absolute;
+    top: 0; left: 0;
   }
   .audioBarFill::after{
     content: "";
     position: absolute;
-    right: -10px;
+    right: -9px;
     top: 50%;
     transform: translateY(-50%);
-    width: 20px; height: 20px;
+    width: 18px; height: 18px;
     border-radius: 50%;
-    background: #222;
+    background: #111;
     border: 3px solid #fff;
-    box-shadow: 0 2px 12px rgba(0,0,0,.35);
+    box-shadow: 0 0 0 2px #111, 0 2px 8px rgba(0,0,0,.4);
     transition: transform .12s ease;
   }
   .audioBar:hover .audioBarFill::after{ transform: translateY(-50%) scale(1.2); }
