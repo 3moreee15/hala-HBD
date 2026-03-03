@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>حلا | 18 🎀</title>
 
-<!-- (اختياري) أيقونة التبويب أعلى المتصفح -->
 <link rel="icon" type="image/png" href="icon.png">
 
 <style>
@@ -14,8 +13,15 @@
     --pink:#ff4fa3; --pink2:#ff7fc3;
     --text:#3b2b2f;
     --border:#ffd1e7;
+
+    /* جماليات */
+    --glass: rgba(255,255,255,.86);
+    --shadow: 0 18px 55px rgba(0,0,0,.14);
+    --shadow2: 0 12px 30px rgba(255,79,163,.20);
   }
   *{ box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
 
   body{
     margin:0;
@@ -31,6 +37,24 @@
     align-items:flex-start;
   }
 
+  /* Aurora خلفية */
+  .aurora{
+    position:fixed; inset:-20%;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(255,79,163,.35), transparent 45%),
+      radial-gradient(circle at 80% 20%, rgba(255,190,220,.35), transparent 48%),
+      radial-gradient(circle at 30% 85%, rgba(255,255,255,.28), transparent 45%),
+      radial-gradient(circle at 85% 80%, rgba(255,120,200,.28), transparent 48%);
+    filter: blur(26px) saturate(1.1);
+    animation: auroraMove 14s ease-in-out infinite alternate;
+    z-index:0;
+    pointer-events:none;
+  }
+  @keyframes auroraMove{
+    0%{ transform: translate3d(-2%, 0%, 0) scale(1.02) rotate(-2deg); }
+    100%{ transform: translate3d(2%, -1%, 0) scale(1.06) rotate(2deg); }
+  }
+
   .sparkle{
     position:fixed; inset:-30px;
     background-image:
@@ -39,22 +63,64 @@
     background-size: 28px 28px, 44px 44px;
     background-position: 0 0, 10px 18px;
     animation: float 10s linear infinite;
-    pointer-events:none; opacity:.75;
+    pointer-events:none; opacity:.6;
     z-index:0;
   }
   @keyframes float{ from{transform:translateY(0)} to{transform:translateY(-40px)} }
 
   .card{
     width: min(92vw, 720px);
-    background:rgba(255,255,255,0.93);
+    background: var(--glass);
     padding: clamp(14px, 2.2vw, 22px);
     border-radius: 22px;
     text-align:center;
-    box-shadow:0 16px 44px rgba(0,0,0,0.12);
+    box-shadow: var(--shadow);
     position:relative;
-    backdrop-filter: blur(6px);
+    backdrop-filter: blur(10px);
     z-index:1;
+    border: 1px solid rgba(255,255,255,.55);
+    transform-style: preserve-3d;
+    transition: transform .12s ease;
   }
+
+  /* لمعة تمر على البطاقة */
+  .card::before{
+    content:"";
+    position:absolute; inset:-2px;
+    border-radius: 24px;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,.65), transparent);
+    transform: translateX(-120%);
+    animation: shine 6.5s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes shine{
+    0%,65%{ transform: translateX(-120%); opacity:.0; }
+    75%{ opacity:.55; }
+    100%{ transform: translateX(120%); opacity:0; }
+  }
+
+  /* شريط التحكم */
+  .topControls{
+    position: sticky;
+    top: 10px;
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    z-index:3;
+    margin-bottom: 10px;
+  }
+  .pillBtn{
+    border:1px solid var(--border);
+    background: rgba(255,255,255,.80);
+    backdrop-filter: blur(10px);
+    border-radius: 999px;
+    padding: 10px 12px;
+    font-weight: 950;
+    cursor:pointer;
+    box-shadow: 0 10px 22px rgba(0,0,0,.10);
+    transition: transform .12s ease, filter .2s ease;
+  }
+  .pillBtn:active{ transform: scale(.98); }
 
   .badges{
     display:flex; gap:10px;
@@ -71,7 +137,7 @@
     font-size: 13px;
   }
 
-  /* ✅ العنوان مع صورة + Glow + دوران */
+  /* عنوان + صورة + Glow + دوران */
   .title{
     margin:10px 0 6px;
     font-size: clamp(20px, 2.6vw, 28px);
@@ -95,10 +161,7 @@
     border-radius:50%;
     animation: slowSpin 8s linear infinite;
   }
-  @keyframes slowSpin{
-    from{ transform:rotate(0deg); }
-    to{ transform:rotate(360deg); }
-  }
+  @keyframes slowSpin{ from{ transform:rotate(0deg);} to{ transform:rotate(360deg);} }
   @keyframes glowPulse{
     0%{ box-shadow:0 0 8px rgba(255,79,163,0.4); }
     50%{ box-shadow:0 0 18px rgba(255,79,163,0.85); }
@@ -188,21 +251,22 @@
   }
   .btn:active{ transform:scale(0.99); }
 
-  /* ✅ Quiz (تم الإصلاح) */
+  /* Quiz */
   .quiz{
     margin-top:14px;
     text-align:center;
     background:#fff;
     border:1px solid var(--border);
     border-radius:18px;
-    padding:44px 14px 14px; /* بدل 14px فقط */
+    padding:44px 14px 14px;
     position:relative;
     overflow:hidden;
+    box-shadow: var(--shadow2);
   }
   .quizTag{
     position:absolute;
-    top:12px;          /* بدل -10px */
-    left:14px;         /* مرتب أكثر */
+    top:12px;
+    left:14px;
     background:linear-gradient(135deg,var(--pink),var(--pink2));
     color:#fff;
     padding:6px 10px;
@@ -227,7 +291,7 @@
     margin:0 auto;
   }
 
-  /* area for moving button */
+  /* زر يهرب */
   .moveArea{
     position:relative;
     height:74px;
@@ -241,7 +305,7 @@
     width:min(320px, 92%);
   }
 
-  /* heart */
+  /* قلب */
   .heartBtn{
     display:inline-flex;
     align-items:center;
@@ -283,6 +347,7 @@
     position:relative;
     white-space:pre-wrap;
     font-size: clamp(13px, 1.8vw, 15px);
+    box-shadow: var(--shadow2);
   }
   .ribbon{
     position:absolute;
@@ -303,7 +368,7 @@
   }
   @keyframes caret{ 50%{border-left-color:transparent} }
 
-  /* funny shake */
+  /* shake */
   @keyframes shake{
     0%,100%{ transform: translateX(-50%) translateY(0); }
     20%{ transform: translateX(-50%) translateY(0) translateX(-6px); }
@@ -321,7 +386,7 @@
     animation: pop 1.2s ease forwards;
     pointer-events:none;
     filter: drop-shadow(0 6px 10px rgba(255,79,163,.22));
-    z-index:5;
+    z-index:6;
   }
   @keyframes pop{
     0%{transform:translate(-50%,-50%) scale(.6); opacity:0}
@@ -334,7 +399,7 @@
     transition: transform 1.7s ease, opacity 1.7s ease;
     will-change: transform;
     pointer-events:none;
-    z-index:6;
+    z-index:7;
   }
   .toast{
     position:fixed;
@@ -356,63 +421,121 @@
     margin:10px 0 0;
     line-height:1.7;
   }
+
+  /* Reveal */
+  .reveal{
+    opacity:0;
+    transform: translateY(14px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal.show{
+    opacity:1;
+    transform: translateY(0);
+  }
+
+  /* فقاعات خلفية */
+  .bubble{
+    position:fixed;
+    bottom:-40px;
+    font-size:16px;
+    opacity:.65;
+    animation: bubbleUp linear forwards;
+    filter: drop-shadow(0 10px 18px rgba(0,0,0,.12));
+    pointer-events:none;
+    z-index:0;
+  }
+  @keyframes bubbleUp{
+    from{ transform: translateY(0) translateX(0) scale(.8); opacity:.0; }
+    15%{ opacity:.75; }
+    to{ transform: translateY(-115vh) translateX(var(--drift)) scale(1.2); opacity:0; }
+  }
+
+  /* وضع داكن */
+  body.dark{
+    background: linear-gradient(135deg, #1b1320, #2a1a2f);
+    color: #f7eaf1;
+  }
+  body.dark .sparkle{ opacity:.25; }
+  body.dark .aurora{ opacity:.55; }
+  body.dark .card{
+    background: rgba(30, 20, 30, .74);
+    border: 1px solid rgba(255,255,255,.12);
+  }
+  body.dark .badge,
+  body.dark .quiz,
+  body.dark .gift,
+  body.dark .toast,
+  body.dark .pillBtn{
+    background: rgba(20, 14, 22, .72);
+    border-color: rgba(255,255,255,.12);
+    color: #f7eaf1;
+  }
+  body.dark .btn.secondary{
+    background: rgba(20, 14, 22, .72);
+    color: #ff9dd1;
+  }
 </style>
 </head>
 
 <body>
-<div class="sparkle"></div>
+  <div class="aurora"></div>
+  <div class="sparkle"></div>
 
-<div class="card" id="card">
-  <div class="badges">
-    <div class="badge">🎀 مفاجأة لحلا</div>
-    <div class="badge" id="dateBadge">📅 اليوم</div>
-  </div>
-
-  <!-- ✅ عنوان مع أيقونة -->
-  <h1 class="title">
-    <span>🎂 حلا - 18 سنة 🎀</span>
-    <span class="iconWrapper">
-      <img src="icon.png" class="titleIcon" alt="icon">
-    </span>
-  </h1>
-
-  <p class="sub">جاوبي خطوة خطوة 💞…وبكل صدق 🤨</p>
-
-  <div class="fadeSlider" id="fadeSlider" aria-label="سلايدر صور (تلاشي)">
-    <img class="fadeSlide active" src="photo1.png" alt="صورة 1">
-    <img class="fadeSlide" src="photo2.png" alt="صورة 2">
-    <img class="fadeSlide" src="photo3.png" alt="صورة 3">
-    <img class="fadeSlide" src="photo4.png" alt="صورة 4">
-    <img class="fadeSlide" src="photo5.png" alt="صورة 5">
-    <div class="dots" id="dots"></div>
-  </div>
-
-  <div class="fileNote">    ملاحظة هاد الموقع صنع بكل حب لـ احلى بنت بالعالم </div>
-
-  <div class="actions">
-    <button class="btn secondary" id="replay">عيدي الحركات ✨</button>
-    <button class="btn secondary" id="copyLink">انسخي الرابط</button>
-  </div>
-
-  <div class="quiz" id="quizBox">
-    <div class="quizTag">💞 أسئلة</div>
-    <div class="qText" id="qText">انتي حلا؟</div>
-    <div class="qSmall" id="qSmall">اضغطي الزر عشان نكمل…</div>
-
-    <div id="answerArea">
-      <button class="btn primary qBtn" id="qBtn">اي حلا</button>
+  <div class="card" id="card">
+    <div class="topControls">
+      <button class="pillBtn" id="toggleTheme">🌙 الوضع</button>
+      <button class="pillBtn" id="toggleSound">🔊 الصوت</button>
     </div>
+
+    <div class="badges">
+      <div class="badge">🎀 مفاجأة لحلا</div>
+      <div class="badge" id="dateBadge">📅 اليوم</div>
+    </div>
+
+    <h1 class="title">
+      <span>🎂 حلا - 18 سنة 🎀</span>
+      <span class="iconWrapper">
+        <img src="icon.png" class="titleIcon" alt="icon">
+      </span>
+    </h1>
+
+    <p class="sub">جاوبي خطوة خطوة 💞…وبكل صدق 🤨</p>
+
+    <div class="fadeSlider" id="fadeSlider" aria-label="سلايدر صور (تلاشي)">
+      <img class="fadeSlide active" src="photo1.png" alt="صورة 1">
+      <img class="fadeSlide" src="photo2.png" alt="صورة 2">
+      <img class="fadeSlide" src="photo3.png" alt="صورة 3">
+      <img class="fadeSlide" src="photo4.png" alt="صورة 4">
+      <img class="fadeSlide" src="photo5.png" alt="صورة 5">
+      <div class="dots" id="dots"></div>
+    </div>
+
+    <div class="fileNote">ملاحظة هاد الموقع صنع بكل حب لـ احلى بنت بالعالم</div>
+
+    <div class="actions">
+      <button class="btn secondary" id="replay">عيدي الحركات ✨</button>
+      <button class="btn secondary" id="copyLink">انسخي الرابط</button>
+    </div>
+
+    <div class="quiz" id="quizBox">
+      <div class="quizTag">💞 أسئلة</div>
+      <div class="qText" id="qText">انتي حلا؟</div>
+      <div class="qSmall" id="qSmall">اضغطي الزر عشان نكمل…</div>
+
+      <div id="answerArea">
+        <button class="btn primary qBtn" id="qBtn">اي حلا</button>
+      </div>
+    </div>
+
+    <div class="gift" id="giftBox">
+      <div class="ribbon">💖 تهنئة</div>
+      <div id="giftText"></div>
+    </div>
+
+    <p class="hint">تلميح: اسحبي على الصورة يمين/يسار للتغيير ✨ واضغطي داخل البطاقة تطلع قلوب 💗</p>
   </div>
 
-  <div class="gift" id="giftBox">
-    <div class="ribbon">💖 تهنئة</div>
-    <div id="giftText"></div>
-  </div>
-
-  <p class="hint">تلميح: اسحبي على الصورة يمين/يسار للتغيير ✨ واضغطي داخل البطاقة تطلع قلوب 💗</p>
-</div>
-
-<div class="toast" id="toast">تم ✅</div>
+  <div class="toast" id="toast">تم ✅</div>
 
 <script>
   const $ = (id)=>document.getElementById(id);
@@ -422,7 +545,7 @@
   const fmt = new Intl.DateTimeFormat("ar-SA", { weekday:"long", year:"numeric", month:"long", day:"numeric" });
   $("dateBadge").textContent = "📅 " + fmt.format(now);
 
-  // الرسالة
+  // رسالة التهنئة
   const message = `
 في مثل هذا اليوم ابدع الله في خلق هذه الجميلة، كلُ عامٍ وانتِ قمري الذي اكتفي به، كلُ عامٍ وانتِ ضوء حياتي، سأحبك إلى الأبد دائما وابدا وأتمنى لك ايام سعيدة جدا وهذا هو يومك لذلك يجب ان تستغليه اشد الاستغلال واحبك عسولتي وحبوبتي ودلوعتي لازم تستغلي هاد اليوم اشد الاستغلال بما انك كملتي ١٨ سنة وان شاء الله تكون سنة خير عليك يارب وانا ناشب لك ناشب لك بكل سنة ترا ان شاء الله وراح أكون معك بكل سنينك ان شاء الله 🫡💞
 
@@ -441,9 +564,13 @@
     showToast._t = setTimeout(()=>t.style.display="none", 1400);
   }
 
-  // === Beep لطيف بدون ملفات (يشتغل بعد تفاعل المستخدم) ===
+  // تحكم الصوت
+  let soundOn = true;
+
+  // Beep لطيف (يحترم كتم الصوت)
   let audioCtx = null;
   function beep(type = "escape"){
+    if(!soundOn) return;
     try{
       if(!audioCtx){
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -531,12 +658,24 @@
     }
   });
 
+  // أزرار التحكم
+  $("toggleSound").addEventListener("click", ()=>{
+    soundOn = !soundOn;
+    $("toggleSound").textContent = soundOn ? "🔊 الصوت" : "🔇 كتم";
+    showToast(soundOn ? "الصوت شغال 🔊" : "تم الكتم 🔇");
+  });
+
+  $("toggleTheme").addEventListener("click", ()=>{
+    document.body.classList.toggle("dark");
+    showToast(document.body.classList.contains("dark") ? "وضع داكن 🌙" : "وضع فاتح ☀️");
+  });
+
   // ===== الأسئلة + زر يهرب =====
   const steps = [
     { q: "🤨 انتي حلا؟", btn: { type:"normal", text:"اي حلا" } },
     { q: "🧐 عندي الك سؤال", btn: { type:"normal", text:"اي شو هو؟" } },
-    { q: "🔪 بتحبي عمر ولا لا؟", btn: { type:"normal", text:"هاااااا؟" } },
-    { q: "شو هااااا بتحبي عمر ولا لا 😾؟", btn: { type:"escape", text:"ما بعرف" } },
+    { q: "🔥 بتحبي عمر ولا لا؟", btn: { type:"normal", text:"هاااااا؟" } },
+    { q: "😾 شو هااااا بتحبي عمر ولا لا؟", btn: { type:"escape", text:"ما بعرف" } },
     { q: "لو بتحبي عمر اضغطي على القلب 💗", btn: { type:"heart" } }
   ];
 
@@ -626,7 +765,7 @@
     }
 
     if(s.btn.type === "heart"){
-      qSmall.textContent = "هذا آخر شي… اضغطي القلب عشان تطلع المفاجاة ✨";
+      qSmall.textContent = "هذا آخر شي… اضغطي القلب عشان تطلع المفاجأة ✨";
       answerArea.innerHTML = `
         <div class="heartBtn" id="heartBtn" role="button" aria-label="زر قلب">
           <span class="heartIcon">💗</span>
@@ -666,24 +805,20 @@
       dotsEl.appendChild(d);
     });
   }
-
   function updateDots(){
     const dots = Array.from(dotsEl.children);
     dots.forEach((d,i)=> d.classList.toggle("active", i===idx));
   }
-
   function show(i){
     slides[idx].classList.remove("active");
     idx = (i + slides.length) % slides.length;
     slides[idx].classList.add("active");
     updateDots();
   }
-
   function goTo(i, user=false){
     show(i);
     if(user) restartAuto();
   }
-
   function next(){ show(idx + 1); }
   function startAuto(){ timer = setInterval(next, 2800); }
   function stopAuto(){ clearInterval(timer); timer = null; }
@@ -720,6 +855,52 @@
 
   slider.addEventListener("mouseenter", stopAuto);
   slider.addEventListener("mouseleave", startAuto);
+
+  // ===== Tilt بسيط للبطاقة =====
+  (function tiltCard(){
+    const card = $("card");
+    card.addEventListener("mousemove", (e)=>{
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      const rx = (-y * 6).toFixed(2);
+      const ry = (x * 8).toFixed(2);
+      card.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+    });
+    card.addEventListener("mouseleave", ()=>{
+      card.style.transform = "rotateX(0deg) rotateY(0deg)";
+    });
+  })();
+
+  // ===== Reveal عند الظهور =====
+  (function reveal(){
+    const els = document.querySelectorAll(".badges, .title, .sub, .fadeSlider, .actions, .quiz, .gift, .hint");
+    els.forEach(el=> el.classList.add("reveal"));
+
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(en=>{
+        if(en.isIntersecting) en.target.classList.add("show");
+      });
+    }, {threshold: 0.12});
+
+    els.forEach(el=> io.observe(el));
+  })();
+
+  // ===== فقاعات خلفية =====
+  (function bubbles(){
+    const icons = ["✨","💗","🎀","⭐️","🌸"];
+    setInterval(()=>{
+      const b = document.createElement("div");
+      b.className = "bubble";
+      b.textContent = icons[Math.floor(Math.random()*icons.length)];
+      b.style.left = Math.random()*100 + "vw";
+      b.style.setProperty("--drift", (Math.random()*120 - 60) + "px");
+      b.style.animationDuration = (7 + Math.random()*6).toFixed(2) + "s";
+      b.style.fontSize = (14 + Math.random()*18).toFixed(0) + "px";
+      document.body.appendChild(b);
+      setTimeout(()=> b.remove(), 14000);
+    }, 650);
+  })();
 </script>
 
 </body>
