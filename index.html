@@ -305,6 +305,15 @@
     align-items:center;
     flex-wrap:wrap;
   }
+  .ageInput.inputError{
+    border-color: #ff4757 !important;
+    animation: inputShake .3s ease;
+  }
+  @keyframes inputShake{
+    0%,100%{ transform: translateX(0); }
+    25%{ transform: translateX(-6px); }
+    75%{ transform: translateX(6px); }
+  }
   .ageInput{
     width: 100%;
     padding: 12px 14px;
@@ -589,7 +598,7 @@
   }
   .audioBar{
     height: 10px;
-    background: rgba(0,0,0,.10);
+    background: #e8e8e8;
     border-radius: 999px;
     cursor: pointer;
     position: relative;
@@ -603,7 +612,7 @@
     transition: width .25s linear;
     pointer-events: none;
     position: relative;
-    box-shadow: 0 0 8px rgba(255,79,163,.5);
+    box-shadow: 0 0 10px rgba(255,79,163,.55);
   }
   .audioBarFill::after{
     content: "";
@@ -1631,17 +1640,28 @@ document.addEventListener("DOMContentLoaded", () => {
         .trim();
 
       function checkAge(){
-        const v = normalizeDigits(ageInput?.value).trim();
-        // تقبل الرقم الصح فقط — أي كلام أو نص يعتبر خطأ
-        const isWord = /[a-zA-Zا-ي]/.test(v);
+        const raw = ageInput?.value || "";
+        const v = normalizeDigits(raw).trim();
+        // كلمة عمر أو عموري — تفاعل خاص
+        const isAgeWord = /^(عمر[ي]?|عموري)$/i.test(raw.trim());
+        // أي جملة أو كلام آخر — لا تفاعل، بس اكس
+        const isOtherText = !isAgeWord && /[a-zA-Zا-ي]/.test(v);
         if(v === "18"){
           burst();
           showAgePopup("success", "🎉", "اووووووه القمر عرف حاله شطوووووووورة 🫰🏻💞", 2200);
           setTimeout(()=>{ stepIndex++; renderStep(); }, 2200);
-        }else if(isWord){
+        }else if(isAgeWord){
           beep("escape");
-          showAgePopup("error", "😼", "هاد مو عمرك الرقمي! اكتبي الرقم 🥸", 2500);
+          showAgePopup("error", "😼", "هو منطقيا صح بس لازم عمرك الرقمي 🥸", 2500);
           if(ageInput){ ageInput.value = ""; setTimeout(()=> ageInput.focus(), 300); }
+        }else if(isOtherText){
+          // جملة عشوائية — اكس بدون popup
+          if(ageInput){
+            ageInput.classList.add("inputError");
+            setTimeout(()=> ageInput.classList.remove("inputError"), 600);
+            ageInput.value = "";
+            setTimeout(()=> ageInput.focus(), 300);
+          }
         }else{
           beep("escape");
           showAgePopup("error", "😼", "خطأ! احد بينسى عمره؟ 😼", 2500);
