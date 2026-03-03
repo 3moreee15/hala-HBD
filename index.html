@@ -1155,17 +1155,21 @@
             <div class="audioWave"></div>
           </div>
         </div>
-        <div class="audioControls">
-          <button class="audioPlayBtn" id="audioPlayBtn">▶️</button>
-          <div class="audioProgress">
-            <div class="audioBar" id="audioBarWrap">
-              <div class="audioBarFill" id="audioBarFill"></div>
-            </div>
-            <div class="audioTimes">
-              <span id="audioCurrentTime">0:00</span>
-              <span id="audioDuration">0:00</span>
-            </div>
+        <!-- شريط التقدم فوق -->
+        <div class="audioProgress">
+          <div class="audioBar" id="audioBarWrap">
+            <div class="audioBarFill" id="audioBarFill"></div>
           </div>
+          <div class="audioTimes">
+            <span id="audioCurrentTime">0:00</span>
+            <span id="audioDuration">0:00</span>
+          </div>
+        </div>
+        <!-- أزرار التحكم تحت -->
+        <div class="audioControls">
+          <button class="audioSkipBtn" id="audioBackBtn" title="رجوع 5 ثواني">&#9664;&#9664;</button>
+          <button class="audioPlayBtn" id="audioPlayBtn">▶️</button>
+          <button class="audioSkipBtn" id="audioFwdBtn" title="تقدم 5 ثواني">&#9654;&#9654;</button>
         </div>
         <audio id="halaAudio" src="hala.mp3" preload="metadata"></audio>
       </div>
