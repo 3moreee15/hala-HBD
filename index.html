@@ -589,7 +589,7 @@
   }
   .audioBar{
     height: 8px;
-    background: #ffd1e7;
+    background: rgba(255,79,163,.18);
     border-radius: 999px;
     cursor: pointer;
     position: relative;
@@ -1629,20 +1629,21 @@ document.addEventListener("DOMContentLoaded", () => {
         .trim();
 
       function checkAge(){
-        const v = normalizeDigits(ageInput?.value);
+        const v = normalizeDigits(ageInput?.value).trim();
+        // تقبل الرقم الصح فقط — أي كلام أو نص يعتبر خطأ
+        const isWord = /[a-zA-Zا-ي]/.test(v);
         if(v === "18"){
           burst();
-          // ✅ مدة رسالة النجاح: 5 ثواني
           showAgePopup("success", "🎉", "اووووووه القمر عرف حاله شطوووووووورة 🫰🏻💞", 2200);
           setTimeout(()=>{ stepIndex++; renderStep(); }, 2200);
+        }else if(isWord){
+          beep("escape");
+          showAgePopup("error", "😼", "هاد مو عمرك الرقمي! اكتبي الرقم 🥸", 2500);
+          if(ageInput){ ageInput.value = ""; setTimeout(()=> ageInput.focus(), 300); }
         }else{
           beep("escape");
-          // ✅ مدة رسالة الخطأ: 5 ثواني
-          showAgePopup("error", "😼", "خطأ! احد بينسى عمره؟", 2500);
-          if(ageInput){
-            ageInput.value = "";
-            setTimeout(()=> ageInput.focus(), 300);
-          }
+          showAgePopup("error", "😼", "خطأ! احد بينسى عمره؟ 😼", 2500);
+          if(ageInput){ ageInput.value = ""; setTimeout(()=> ageInput.focus(), 300); }
         }
       }
 
