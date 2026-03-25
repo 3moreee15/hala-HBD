@@ -1658,7 +1658,7 @@
     <div class="videoBox">
       <button class="videoCloseBtn" id="videoCloseBtn">✕</button>
       <div class="videoLoader" id="videoLoader"></div>
-      <video id="celebVideo" preload="auto" src="hala.mp4" playsinline></video>
+      <video id="celebVideo" preload="auto" src="https://drive.google.com/uc?export=download&confirm=1&id=1paPpxpkmxgpXsz4HIchl-uTmDE3PZTlJ" playsinline></video>
     </div>
   </div>
 
@@ -3015,18 +3015,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if(!overlay || !video) return;
       overlay.classList.add("show");
       video.currentTime = 0;
-      const loader = document.getElementById("videoLoader");
-      if(loader) loader.classList.add("active");
-      const tryPlay = () => {
-        video.play().then(()=>{
-          if(loader) loader.classList.remove("active");
-        }).catch(()=>{});
-      };
-      if(video.readyState >= 3){
-        tryPlay();
-      } else {
-        video.addEventListener("canplaythrough", tryPlay, {once:true});
-      }
+      video.play().catch(()=>{});
     }
 
     function closeVideo(){
