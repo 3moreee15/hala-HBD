@@ -445,19 +445,24 @@
     border-radius: 22px;
     overflow: hidden;
     box-shadow: 0 24px 80px rgba(0,0,0,.6);
-    transform: scale(.85);
+    transform: scale(.85) translateZ(0);
     transition: transform .35s cubic-bezier(.2,.9,.2,1);
+    contain: layout paint style;
+    isolation: isolate;
+    background: #000;
   }
   .videoOverlay.show .videoBox{
-    transform: scale(1);
+    transform: scale(1) translateZ(0);
   }
   .videoBox video{
     width: 100%; height: 100%;
     display: block;
     object-fit: cover;
     border-radius: 22px;
+    background: #000;
     transform: translateZ(0);
     backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
     will-change: transform;
   }
   .videoCloseBtn{
@@ -1661,7 +1666,7 @@
     <div class="videoBox">
       <button class="videoCloseBtn" id="videoCloseBtn">✕</button>
       <div class="videoLoader" id="videoLoader"></div>
-      <video id="celebVideo" preload="metadata" data-src="hala.mp4" playsinline webkit-playsinline></video>
+      <video id="celebVideo" preload="metadata" src="hala.mp4" playsinline webkit-playsinline x5-playsinline="true" disablepictureinpicture disableremoteplayback></video>
     </div>
   </div>
 
@@ -3015,178 +3020,81 @@ document.addEventListener("DOMContentLoaded", () => {
     const loader   = document.getElementById("videoLoader");
     if(!overlay || !video) return;
 
-    let prepared = false;
-    let preparingPromise = null;
-    let blobReady = false;
-    let videoBlobUrl = "";
-    let networkSrc = video.dataset.src || "";
+    let primed = false;
+    let openRequested = false;
 
-    video.preload = "metadata";
-    video.playsInline = true;
-    video.setAttribute("playsinline", "");
-    video.setAttribute("webkit-playsinline", "");
-    video.setAttribute("crossorigin", "anonymous");
+    function showLoader(on){
+      if(loader) loader.classList.toggle("active", !!on);
+    }
 
-    function showLoader(){ if(loader) loader.classList.add("active"); }
-    function hideLoader(){ if(loader) loader.classList.remove("active"); }
-
-    function primeDecoder(){
+    function primeVideo(){
+      if(primed) return;
+      primed = true;
       try{
-        video.muted = true;
-        const p = video.play();
-        if(p && typeof p.then === "function"){
-          p.then(()=>{
-            video.pause();
-            video.currentTime = 0;
-            video.muted = false;
-          }).catch(()=>{
-            video.pause();
-            video.currentTime = 0;
-            video.muted = false;
-          });
-        }else{
-          video.pause();
-          video.currentTime = 0;
-          video.muted = false;
-        }
-      }catch(_e){
-        video.muted = false;
-      }
+        video.preload = "auto";
+        video.load();
+      }catch(_){}
     }
 
-    function attachSource(src){
-      if(!src) return;
-      if(video.src !== src) video.src = src;
-      video.preload = "auto";
-      video.load();
-    }
-
-    async function warmVideoFile(){
-      if(blobReady || !networkSrc) return;
-      try{
-        const res = await fetch(networkSrc, { cache: "force-cache" });
-        if(!res.ok) throw new Error("fetch_failed");
-        const blob = await res.blob();
-        if(blob && blob.size){
-          videoBlobUrl = URL.createObjectURL(blob);
-          blobReady = true;
-          attachSource(videoBlobUrl);
-          primeDecoder();
-        }
-      }catch(_e){
-        attachSource(networkSrc);
-      }
-    }
-
-    function prepareVideo(){
-      if(prepared) return Promise.resolve();
-      if(preparingPromise) return preparingPromise;
-
-      showLoader();
-      preparingPromise = (async ()=>{
-        if(blobReady && videoBlobUrl){
-          attachSource(videoBlobUrl);
-        }else if(!video.src){
-          attachSource(networkSrc);
-        }
-
-        await new Promise((resolve)=>{
-          let done = false;
-          const finish = ()=>{
-            if(done) return;
-            done = true;
-            video.removeEventListener("loadeddata", finish);
-            video.removeEventListener("canplay", finish);
-            video.removeEventListener("canplaythrough", finish);
-            video.removeEventListener("error", finish);
-            resolve();
-          };
-
-          if(video.readyState >= 3){
-            finish();
-            return;
-          }
-
-          video.addEventListener("loadeddata", finish, { once:true });
-          video.addEventListener("canplay", finish, { once:true });
-          video.addEventListener("canplaythrough", finish, { once:true });
-          video.addEventListener("error", finish, { once:true });
-          setTimeout(finish, 2500);
-        });
-
-        prepared = true;
-        hideLoader();
-        primeDecoder();
-      })().finally(()=>{
-        preparingPromise = null;
-      });
-
-      return preparingPromise;
-    }
-
-    function playVideo(){
-      video.pause();
+    function reallyPlay(){
+      showLoader(false);
       video.currentTime = 0;
-      requestAnimationFrame(()=>{
-        requestAnimationFrame(()=>{
-          const playPromise = video.play();
-          if(playPromise && typeof playPromise.catch === "function") playPromise.catch(()=>{});
-        });
-      });
+      const p = video.play();
+      if(p && typeof p.catch === "function") p.catch(()=>{});
     }
 
     function openVideo(){
       if(!overlay || !video) return;
+      openRequested = true;
       overlay.classList.add("show");
-      showLoader();
-      prepareVideo().then(()=>{
-        playVideo();
-      });
+      primeVideo();
+
+      if(video.readyState >= 3){
+        requestAnimationFrame(()=> requestAnimationFrame(reallyPlay));
+      }else{
+        showLoader(true);
+      }
     }
 
     function closeVideo(){
+      openRequested = false;
       overlay.classList.remove("show");
+      showLoader(false);
       video.pause();
-      video.currentTime = 0;
-      hideLoader();
+      try{ video.currentTime = 0; }catch(_){}
     }
 
-    video.addEventListener("waiting", showLoader);
-    video.addEventListener("stalled", showLoader);
-    video.addEventListener("seeking", showLoader);
-    video.addEventListener("playing", hideLoader);
-    video.addEventListener("canplay", hideLoader);
-    video.addEventListener("canplaythrough", hideLoader);
-    video.addEventListener("seeked", hideLoader);
+    function tryStartWhenReady(){
+      if(!openRequested) return;
+      if(video.readyState >= 3) requestAnimationFrame(()=> requestAnimationFrame(reallyPlay));
+    }
+
+    video.addEventListener("loadeddata", tryStartWhenReady, { passive:true });
+    video.addEventListener("canplay", tryStartWhenReady, { passive:true });
+    video.addEventListener("canplaythrough", tryStartWhenReady, { passive:true });
+    video.addEventListener("playing", ()=> showLoader(false), { passive:true });
+    video.addEventListener("waiting", ()=>{ if(openRequested) showLoader(true); }, { passive:true });
+    video.addEventListener("stalled", ()=>{ if(openRequested) showLoader(true); }, { passive:true });
+    video.addEventListener("seeking", ()=>{ if(openRequested) showLoader(true); }, { passive:true });
+    video.addEventListener("seeked", ()=> showLoader(false), { passive:true });
 
     // يختفي لحاله لما يخلص الفيديو
     video.addEventListener("ended", closeVideo);
-    closeBtn.addEventListener("click", closeVideo);
+    closeBtn?.addEventListener("click", closeVideo);
     overlay.addEventListener("click", (e)=>{ if(e.target === overlay) closeVideo(); });
     const replayBtn = document.getElementById("replayVideoBtn");
     if(replayBtn) replayBtn.addEventListener("click", openVideo);
 
-    // تحميل مبكر هادئ للفيديو نفسه ثم تهيئة المشغل
-    window.addEventListener("load", ()=>{
-      const startWarmup = ()=>{
-        warmVideoFile().finally(()=>{
-          setTimeout(prepareVideo, 150);
-        });
-      };
-      if("requestIdleCallback" in window){
-        requestIdleCallback(startWarmup, { timeout: 1200 });
-      }else{
-        setTimeout(startWarmup, 500);
-      }
-    }, { once:true });
+    // تهيئة هادئة للفيديو قبل التشغيل
+    window.addEventListener("load", ()=>{ setTimeout(primeVideo, 1200); }, { once:true });
 
     // يشتغل عند ظهور giftBox
     const giftBox = document.getElementById("giftBox");
     if(giftBox){
       const obs = new MutationObserver(()=>{
         if(giftBox.style.display && giftBox.style.display !== "none"){
-          prepareVideo();
-          setTimeout(openVideo, 450);
+          primeVideo();
+          setTimeout(openVideo, 400);
           obs.disconnect();
         }
       });
