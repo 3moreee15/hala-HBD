@@ -623,6 +623,82 @@
     to{   opacity:1; transform: translateY(0) scale(1); }
   }
 
+
+  /* ===== عداد عيد الميلاد القادم ===== */
+  .bdayCountdown{
+    margin-top: 12px;
+    background: linear-gradient(135deg, #fff0f7, #ffe4f0);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 12px 14px;
+    box-shadow: var(--shadow2);
+    text-align: center;
+  }
+  .bdayCountTitle{
+    font-size: 13px; font-weight: 900;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  .bdayCountGrid{
+    display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+  }
+  .bdayCountUnit{
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 6px 10px;
+    min-width: 52px;
+  }
+  .bdayCountNum{
+    font-size: 22px; font-weight: 950;
+    color: var(--accent);
+    line-height: 1.1;
+  }
+  .bdayCountLabel{
+    font-size: 10px; opacity: .7; font-weight: 900;
+  }
+  .bdayCountMsg{
+    font-size: 13px; font-weight: 900;
+    color: var(--accent); margin-top: 6px;
+  }
+
+  /* ===== خيار تغيير لون النص ===== */
+  .colorPickerWrap{
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px; margin-top: 10px; flex-wrap: wrap;
+  }
+  .colorPickerWrap label{
+    font-size: 12px; font-weight: 900; color: var(--accent);
+  }
+  .colorSwatches{
+    display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
+  }
+  .swatch{
+    width: 24px; height: 24px; border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform .15s ease, border-color .15s ease;
+  }
+  .swatch:hover{ transform: scale(1.2); }
+  .swatch.active{ border-color: #333; transform: scale(1.15); }
+
+  /* ===== زر الهوم سكرين ===== */
+  .a2hsBtn{
+    display: none;
+    width: 100%;
+    margin-top: 10px;
+    padding: 11px 14px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: linear-gradient(135deg, #fff, #ffe8f3);
+    color: var(--accent);
+    font-weight: 900; font-size: 14px;
+    cursor: pointer;
+    box-shadow: var(--shadow2);
+    transition: transform .12s ease;
+  }
+  .a2hsBtn:active{ transform: scale(.98); }
+  .a2hsBtn.visible{ display: block; }
+
   /* ===== رسالة إعادة التحميل ===== */
   .reloadOverlay{
     position:fixed; inset:0; z-index:99999;
@@ -1424,6 +1500,18 @@
 
     <p class="hint">تلميح: اسحبي على الصورة يمين/يسار للتغيير ✨ واضغطي داخل البطاقة تطلع قلوب 💗</p>
 
+    <!-- عداد عيد الميلاد القادم -->
+    <div class="bdayCountdown" id="bdayCountdown">
+      <div class="bdayCountTitle">🎂 كم باقي على عيد ميلاد حلا؟</div>
+      <div class="bdayCountGrid" id="bdayCountGrid">
+        <div class="bdayCountUnit"><div class="bdayCountNum" id="bc-d">0</div><div class="bdayCountLabel">يوم</div></div>
+        <div class="bdayCountUnit"><div class="bdayCountNum" id="bc-h">0</div><div class="bdayCountLabel">ساعة</div></div>
+        <div class="bdayCountUnit"><div class="bdayCountNum" id="bc-m">0</div><div class="bdayCountLabel">دقيقة</div></div>
+        <div class="bdayCountUnit"><div class="bdayCountNum" id="bc-s">0</div><div class="bdayCountLabel">ثانية</div></div>
+      </div>
+      <div class="bdayCountMsg" id="bdayCountMsg"></div>
+    </div>
+
     <!-- ساعة العمر -->
     <div class="ageClock" style="opacity:1;transform:none">
       <div class="ageClockTitle">⏱️ عمر حلا بالضبط من لحظة ميلادها</div>
@@ -1442,6 +1530,9 @@
     <canvas id="shareCanvas"></canvas>
 
   </div>
+
+  <!-- زر الهوم سكرين -->
+  <button class="a2hsBtn" id="a2hsBtn">📱 احفظي الصفحة على الهوم سكرين</button>
 
   <!-- popup العمر -->
   <div class="agePopup" id="agePopup">
@@ -2340,6 +2431,91 @@ document.addEventListener("DOMContentLoaded", () => {
       requestAnimationFrame(draw);
     }
     draw();
+  })();
+
+  // ===== عداد عيد الميلاد القادم =====
+  (function bdayCountdown(){
+    function tick(){
+      const now = new Date();
+      // عيد الميلاد القادم: 28 أبريل
+      let next = new Date(now.getFullYear(), 3, 28); // أبريل = 3 (0-indexed)
+      if(now >= next) next = new Date(now.getFullYear() + 1, 3, 28);
+      const diff = next - now;
+      if(diff <= 0){
+        document.getElementById("bdayCountMsg").textContent = "🎉 عيد ميلادها اليوم!";
+        document.getElementById("bdayCountGrid").style.display = "none";
+        return;
+      }
+      const days  = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const mins  = Math.floor((diff % 3600000)  / 60000);
+      const secs  = Math.floor((diff % 60000)    / 1000);
+      const pad = n => String(n).padStart(2,"0");
+      const set = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=pad(v); };
+      set("bc-d", days);
+      set("bc-h", hours);
+      set("bc-m", mins);
+      set("bc-s", secs);
+      if(days === 0)
+        document.getElementById("bdayCountMsg").textContent = "🎀 عيد ميلادها غداً!";
+      else if(days <= 7)
+        document.getElementById("bdayCountMsg").textContent = `⏳ بس ${days} أيام!`;
+      else
+        document.getElementById("bdayCountMsg").textContent = "";
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
+
+  // ===== خيار تغيير لون النص =====
+  (function colorPicker(){
+    const swatches = document.querySelectorAll(".swatch");
+    const giftTextEl = document.getElementById("giftText");
+    swatches.forEach(sw => {
+      sw.addEventListener("click", ()=>{
+        swatches.forEach(s => s.classList.remove("active"));
+        sw.classList.add("active");
+        const color = sw.dataset.color;
+        if(giftTextEl) giftTextEl.style.color = color;
+        localStorage.setItem("hala_text_color", color);
+      });
+    });
+    // استرجع اللون المحفوظ
+    const saved = localStorage.getItem("hala_text_color");
+    if(saved){
+      if(giftTextEl) giftTextEl.style.color = saved;
+      swatches.forEach(s => {
+        s.classList.toggle("active", s.dataset.color === saved);
+      });
+    }
+  })();
+
+  // ===== زر الهوم سكرين =====
+  (function a2hs(){
+    let deferredPrompt;
+    const btn = document.getElementById("a2hsBtn");
+    if(!btn) return;
+    window.addEventListener("beforeinstallprompt", (e)=>{
+      e.preventDefault();
+      deferredPrompt = e;
+      btn.classList.add("visible");
+    });
+    btn.addEventListener("click", async ()=>{
+      if(!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if(outcome === "accepted") btn.classList.remove("visible");
+      deferredPrompt = null;
+    });
+    // iOS — لا يدعم beforeinstallprompt، نعرض تعليمات
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isInStandalone = window.matchMedia("(display-mode: standalone)").matches;
+    if(isIOS && !isInStandalone){
+      btn.classList.add("visible");
+      btn.addEventListener("click", ()=>{
+        showToast("اضغطي على 'مشاركة' ثم 'إضافة للشاشة الرئيسية' 📲");
+      });
+    }
   })();
 
   // ===== ساعة العمر =====
