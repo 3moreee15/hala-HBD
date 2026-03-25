@@ -699,6 +699,56 @@
   .a2hsBtn:active{ transform: scale(.98); }
   .a2hsBtn.visible{ display: block; }
 
+
+  /* ===== لعبة اصطياد عمر وكنان ===== */
+  .gameSection{
+    margin-top: 14px;
+    background: linear-gradient(135deg, #fff0f7, #ffe4f0);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 14px;
+    box-shadow: var(--shadow2);
+    position: relative;
+    overflow: hidden;
+  }
+  .gameTitle{
+    font-size: 15px; font-weight: 950;
+    color: var(--accent); text-align: center;
+    margin-bottom: 8px;
+  }
+  .gameStats{
+    display: flex; justify-content: space-between;
+    font-size: 12px; font-weight: 900;
+    color: var(--accent); margin-bottom: 8px;
+    padding: 6px 10px;
+    background: #fff; border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+  .gameCanvas{
+    width: 100%; height: 320px;
+    background: linear-gradient(160deg, #ffe8f5, #fff0fa);
+    border-radius: 14px;
+    border: 2px solid var(--border);
+    display: block;
+    touch-action: none;
+    cursor: crosshair;
+    position: relative;
+  }
+  .gameControls{
+    display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;
+  }
+  .gameOverlay{
+    position: absolute; inset: 0;
+    background: rgba(255,255,255,.92);
+    border-radius: 14px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 10px; z-index: 10;
+    backdrop-filter: blur(4px);
+  }
+  .gameOverlay.hidden{ display: none; }
+  .gameOverlayTitle{ font-size: 22px; font-weight: 950; color: var(--accent); }
+  .gameOverlayScore{ font-size: 15px; font-weight: 900; opacity: .8; }
   /* ===== رسالة إعادة التحميل ===== */
   .reloadOverlay{
     position:fixed; inset:0; z-index:99999;
@@ -1499,6 +1549,27 @@
     </div>
 
     <p class="hint">تلميح: اسحبي على الصورة يمين/يسار للتغيير ✨ واضغطي داخل البطاقة تطلع قلوب 💗</p>
+
+    <!-- لعبة اصطياد عمر وكنان -->
+    <div class="gameSection" id="gameSection">
+      <div class="gameTitle">🎯 اصطادي عمر وكنان!</div>
+      <div class="gameStats">
+        <span>⏱️ الوقت: <b id="gameTime">30</b>s</span>
+        <span>🎯 النقاط: <b id="gameScore">0</b></span>
+        <span>🏆 أعلى: <b id="gameHigh">0</b></span>
+      </div>
+      <div style="position:relative">
+        <canvas class="gameCanvas" id="gameCanvas"></canvas>
+        <div class="gameOverlay" id="gameOverlay">
+          <div class="gameOverlayTitle">🎯 اصطادي عمر وكنان!</div>
+          <div class="gameOverlayScore">اضغطي على وجوههم قبل ما يختفون 😄</div>
+          <button class="btn primary" id="gameStartBtn" style="width:160px">ابدأي اللعبة 🚀</button>
+        </div>
+      </div>
+      <div class="gameControls">
+        <button class="btn secondary" id="gameRestartBtn" style="flex:1">🔄 من أول</button>
+      </div>
+    </div>
 
     <!-- عداد عيد الميلاد القادم -->
     <div class="bdayCountdown" id="bdayCountdown">
@@ -2431,6 +2502,173 @@ document.addEventListener("DOMContentLoaded", () => {
       requestAnimationFrame(draw);
     }
     draw();
+  })();
+
+  // ===== لعبة اصطياد عمر وكنان =====
+  (function initGame(){
+    const canvas   = document.getElementById("gameCanvas");
+    const overlay  = document.getElementById("gameOverlay");
+    const startBtn = document.getElementById("gameStartBtn");
+    const restartBtn = document.getElementById("gameRestartBtn");
+    const scoreEl  = document.getElementById("gameScore");
+    const timeEl   = document.getElementById("gameTime");
+    const highEl   = document.getElementById("gameHigh");
+    if(!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    const IMGS = Array.from({length:8}, (_,i) => {
+      const img = new Image();
+      img.src = `game${i+1}.png`;
+      return img;
+    });
+
+    let targets=[], score=0, timeLeft=30, running=false, animId=null, timerInt=null;
+    let highScore = parseInt(localStorage.getItem("hala_game_high") || "0");
+    highEl.textContent = highScore;
+
+    function resize(){
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width  = rect.width - 4;
+      canvas.height = 320;
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    function randomTarget(){
+      const img = IMGS[Math.floor(Math.random() * IMGS.length)];
+      const size = 55 + Math.random() * 40;
+      return {
+        img,
+        x: Math.random() * (canvas.width  - size),
+        y: Math.random() * (canvas.height - size),
+        size,
+        life: 1800 + Math.random() * 1200, // ms قبل ما يختفي
+        born: performance.now(),
+        hit: false,
+        pop: 0,
+        dx: (Math.random() - .5) * 1.2,
+        dy: (Math.random() - .5) * 1.2,
+      };
+    }
+
+    function spawnTargets(){
+      const count = Math.min(3 + Math.floor((30 - timeLeft) / 8), 6);
+      while(targets.length < count) targets.push(randomTarget());
+    }
+
+    let last = 0;
+    function loop(ts){
+      if(!running) return;
+      const dt = ts - last; last = ts;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // حذف المنتهية
+      targets = targets.filter(t => {
+        if(t.hit) return t.pop < 1;
+        return ts - t.born < t.life;
+      });
+
+      spawnTargets();
+
+      targets.forEach(t => {
+        if(t.hit){
+          t.pop += 0.12;
+          ctx.globalAlpha = Math.max(0, 1 - t.pop);
+          const s = t.size * (1 + t.pop * 0.5);
+          ctx.drawImage(t.img, t.x - (s - t.size)/2, t.y - (s - t.size)/2, s, s);
+          ctx.globalAlpha = 1;
+          return;
+        }
+
+        // حركة
+        t.x += t.dx;
+        t.y += t.dy;
+        if(t.x < 0 || t.x + t.size > canvas.width)  t.dx *= -1;
+        if(t.y < 0 || t.y + t.size > canvas.height) t.dy *= -1;
+
+        // نبض قبل الاختفاء
+        const remaining = t.life - (ts - t.born);
+        const pulse = remaining < 600 ? 0.6 + 0.4 * Math.sin(ts * 0.02) : 1;
+        ctx.globalAlpha = Math.min(1, remaining / 300) * pulse;
+        ctx.drawImage(t.img, t.x, t.y, t.size, t.size);
+        ctx.globalAlpha = 1;
+      });
+
+      animId = requestAnimationFrame(loop);
+    }
+
+    function tap(cx, cy){
+      if(!running) return;
+      for(let i = targets.length - 1; i >= 0; i--){
+        const t = targets[i];
+        if(t.hit) continue;
+        if(cx >= t.x && cx <= t.x + t.size && cy >= t.y && cy <= t.y + t.size){
+          t.hit = true;
+          score++;
+          scoreEl.textContent = score;
+          burst();
+          break;
+        }
+      }
+    }
+
+    canvas.addEventListener("click", e => {
+      const r = canvas.getBoundingClientRect();
+      tap(e.clientX - r.left, e.clientY - r.top);
+    });
+    canvas.addEventListener("touchstart", e => {
+      e.preventDefault();
+      const r = canvas.getBoundingClientRect();
+      const t = e.touches[0];
+      tap(t.clientX - r.left, t.clientY - r.top);
+    }, {passive: false});
+
+    function startGame(){
+      score = 0; timeLeft = 30; targets = [];
+      scoreEl.textContent = 0;
+      timeEl.textContent = 30;
+      running = true;
+      overlay.classList.add("hidden");
+      last = performance.now();
+      animId = requestAnimationFrame(loop);
+      timerInt = setInterval(()=>{
+        timeLeft--;
+        timeEl.textContent = timeLeft;
+        if(timeLeft <= 0){
+          clearInterval(timerInt);
+          running = false;
+          cancelAnimationFrame(animId);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          // حفظ أعلى نقطة
+          if(score > highScore){
+            highScore = score;
+            localStorage.setItem("hala_game_high", highScore);
+            highEl.textContent = highScore;
+          }
+          // overlay النهاية
+          overlay.classList.remove("hidden");
+          overlay.querySelector(".gameOverlayTitle").textContent = score >= 20 ? "🏆 ممتازة حلا!" : score >= 10 ? "🎉 كتير زين!" : "😄 جربي مرة ثانية!";
+          overlay.querySelector(".gameOverlayScore").textContent = `نقاطك: ${score} | أعلى نقطة: ${highScore}`;
+          startBtn.textContent = "🔄 العب مرة ثانية";
+        }
+      }, 1000);
+    }
+
+    startBtn.addEventListener("click", startGame);
+    restartBtn.addEventListener("click", ()=>{
+      clearInterval(timerInt);
+      cancelAnimationFrame(animId);
+      running = false;
+      targets = [];
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      overlay.classList.remove("hidden");
+      overlay.querySelector(".gameOverlayTitle").textContent = "🎯 اصطادي عمر وكنان!";
+      overlay.querySelector(".gameOverlayScore").textContent = "اضغطي على وجوههم قبل ما يختفون 😄";
+      startBtn.textContent = "ابدأي اللعبة 🚀";
+      score = 0; timeLeft = 30;
+      scoreEl.textContent = 0;
+      timeEl.textContent = 30;
+    });
   })();
 
   // ===== عداد عيد الميلاد القادم =====
