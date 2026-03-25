@@ -3017,41 +3017,107 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let prepared = false;
     let preparingPromise = null;
+    let blobReady = false;
+    let videoBlobUrl = "";
+    let networkSrc = video.dataset.src || "";
+
+    video.preload = "metadata";
+    video.playsInline = true;
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+    video.setAttribute("crossorigin", "anonymous");
 
     function showLoader(){ if(loader) loader.classList.add("active"); }
     function hideLoader(){ if(loader) loader.classList.remove("active"); }
+
+    function primeDecoder(){
+      try{
+        video.muted = true;
+        const p = video.play();
+        if(p && typeof p.then === "function"){
+          p.then(()=>{
+            video.pause();
+            video.currentTime = 0;
+            video.muted = false;
+          }).catch(()=>{
+            video.pause();
+            video.currentTime = 0;
+            video.muted = false;
+          });
+        }else{
+          video.pause();
+          video.currentTime = 0;
+          video.muted = false;
+        }
+      }catch(_e){
+        video.muted = false;
+      }
+    }
+
+    function attachSource(src){
+      if(!src) return;
+      if(video.src !== src) video.src = src;
+      video.preload = "auto";
+      video.load();
+    }
+
+    async function warmVideoFile(){
+      if(blobReady || !networkSrc) return;
+      try{
+        const res = await fetch(networkSrc, { cache: "force-cache" });
+        if(!res.ok) throw new Error("fetch_failed");
+        const blob = await res.blob();
+        if(blob && blob.size){
+          videoBlobUrl = URL.createObjectURL(blob);
+          blobReady = true;
+          attachSource(videoBlobUrl);
+          primeDecoder();
+        }
+      }catch(_e){
+        attachSource(networkSrc);
+      }
+    }
 
     function prepareVideo(){
       if(prepared) return Promise.resolve();
       if(preparingPromise) return preparingPromise;
 
       showLoader();
-      preparingPromise = new Promise((resolve)=>{
-        let done = false;
-        const finish = ()=>{
-          if(done) return;
-          done = true;
-          prepared = true;
-          video.removeEventListener("loadeddata", finish);
-          video.removeEventListener("canplay", finish);
-          video.removeEventListener("error", finish);
-          hideLoader();
-          resolve();
-        };
-
-        if(!video.src){
-          const src = video.dataset.src;
-          if(src) video.src = src;
+      preparingPromise = (async ()=>{
+        if(blobReady && videoBlobUrl){
+          attachSource(videoBlobUrl);
+        }else if(!video.src){
+          attachSource(networkSrc);
         }
 
-        video.addEventListener("loadeddata", finish, { once:true });
-        video.addEventListener("canplay", finish, { once:true });
-        video.addEventListener("error", finish, { once:true });
+        await new Promise((resolve)=>{
+          let done = false;
+          const finish = ()=>{
+            if(done) return;
+            done = true;
+            video.removeEventListener("loadeddata", finish);
+            video.removeEventListener("canplay", finish);
+            video.removeEventListener("canplaythrough", finish);
+            video.removeEventListener("error", finish);
+            resolve();
+          };
 
-        video.load();
+          if(video.readyState >= 3){
+            finish();
+            return;
+          }
 
-        setTimeout(finish, 1800);
-      }).finally(()=>{
+          video.addEventListener("loadeddata", finish, { once:true });
+          video.addEventListener("canplay", finish, { once:true });
+          video.addEventListener("canplaythrough", finish, { once:true });
+          video.addEventListener("error", finish, { once:true });
+          setTimeout(finish, 2500);
+        });
+
+        prepared = true;
+        hideLoader();
+        primeDecoder();
+      })().finally(()=>{
         preparingPromise = null;
       });
 
@@ -3059,6 +3125,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function playVideo(){
+      video.pause();
       video.currentTime = 0;
       requestAnimationFrame(()=>{
         requestAnimationFrame(()=>{
@@ -3089,6 +3156,7 @@ document.addEventListener("DOMContentLoaded", () => {
     video.addEventListener("seeking", showLoader);
     video.addEventListener("playing", hideLoader);
     video.addEventListener("canplay", hideLoader);
+    video.addEventListener("canplaythrough", hideLoader);
     video.addEventListener("seeked", hideLoader);
 
     // يختفي لحاله لما يخلص الفيديو
@@ -3098,9 +3166,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const replayBtn = document.getElementById("replayVideoBtn");
     if(replayBtn) replayBtn.addEventListener("click", openVideo);
 
-    // تهيئة مبكرة بدون تشغيل حتى يصير العرض أسلس
+    // تحميل مبكر هادئ للفيديو نفسه ثم تهيئة المشغل
     window.addEventListener("load", ()=>{
-      setTimeout(prepareVideo, 600);
+      const startWarmup = ()=>{
+        warmVideoFile().finally(()=>{
+          setTimeout(prepareVideo, 150);
+        });
+      };
+      if("requestIdleCallback" in window){
+        requestIdleCallback(startWarmup, { timeout: 1200 });
+      }else{
+        setTimeout(startWarmup, 500);
+      }
     }, { once:true });
 
     // يشتغل عند ظهور giftBox
