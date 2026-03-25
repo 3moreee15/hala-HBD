@@ -445,25 +445,17 @@
     border-radius: 22px;
     overflow: hidden;
     box-shadow: 0 24px 80px rgba(0,0,0,.6);
-    transform: scale(.85) translateZ(0);
+    transform: scale(.85);
     transition: transform .35s cubic-bezier(.2,.9,.2,1);
-    contain: layout paint style;
-    isolation: isolate;
-    background: #000;
   }
   .videoOverlay.show .videoBox{
-    transform: scale(1) translateZ(0);
+    transform: scale(1);
   }
   .videoBox video{
     width: 100%; height: 100%;
     display: block;
     object-fit: cover;
     border-radius: 22px;
-    background: #000;
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    will-change: transform;
   }
   .videoCloseBtn{
     position: absolute; top: 10px; left: 10px;
@@ -1666,7 +1658,7 @@
     <div class="videoBox">
       <button class="videoCloseBtn" id="videoCloseBtn">✕</button>
       <div class="videoLoader" id="videoLoader"></div>
-      <video id="celebVideo" preload="metadata" src="hala.mp4" playsinline webkit-playsinline x5-playsinline="true" disablepictureinpicture disableremoteplayback></video>
+      <video id="celebVideo" preload="auto" src="hala.mp4" playsinline></video>
     </div>
   </div>
 
@@ -3017,83 +3009,33 @@ document.addEventListener("DOMContentLoaded", () => {
     const overlay  = document.getElementById("videoOverlay");
     const video    = document.getElementById("celebVideo");
     const closeBtn = document.getElementById("videoCloseBtn");
-    const loader   = document.getElementById("videoLoader");
     if(!overlay || !video) return;
-
-    let primed = false;
-    let openRequested = false;
-
-    function showLoader(on){
-      if(loader) loader.classList.toggle("active", !!on);
-    }
-
-    function primeVideo(){
-      if(primed) return;
-      primed = true;
-      try{
-        video.preload = "auto";
-        video.load();
-      }catch(_){}
-    }
-
-    function reallyPlay(){
-      showLoader(false);
-      video.currentTime = 0;
-      const p = video.play();
-      if(p && typeof p.catch === "function") p.catch(()=>{});
-    }
 
     function openVideo(){
       if(!overlay || !video) return;
-      openRequested = true;
       overlay.classList.add("show");
-      primeVideo();
-
-      if(video.readyState >= 3){
-        requestAnimationFrame(()=> requestAnimationFrame(reallyPlay));
-      }else{
-        showLoader(true);
-      }
+      video.currentTime = 0;
+      video.play().catch(()=>{});
     }
 
     function closeVideo(){
-      openRequested = false;
       overlay.classList.remove("show");
-      showLoader(false);
       video.pause();
-      try{ video.currentTime = 0; }catch(_){}
+      video.currentTime = 0;
     }
-
-    function tryStartWhenReady(){
-      if(!openRequested) return;
-      if(video.readyState >= 3) requestAnimationFrame(()=> requestAnimationFrame(reallyPlay));
-    }
-
-    video.addEventListener("loadeddata", tryStartWhenReady, { passive:true });
-    video.addEventListener("canplay", tryStartWhenReady, { passive:true });
-    video.addEventListener("canplaythrough", tryStartWhenReady, { passive:true });
-    video.addEventListener("playing", ()=> showLoader(false), { passive:true });
-    video.addEventListener("waiting", ()=>{ if(openRequested) showLoader(true); }, { passive:true });
-    video.addEventListener("stalled", ()=>{ if(openRequested) showLoader(true); }, { passive:true });
-    video.addEventListener("seeking", ()=>{ if(openRequested) showLoader(true); }, { passive:true });
-    video.addEventListener("seeked", ()=> showLoader(false), { passive:true });
 
     // يختفي لحاله لما يخلص الفيديو
     video.addEventListener("ended", closeVideo);
-    closeBtn?.addEventListener("click", closeVideo);
+    closeBtn.addEventListener("click", closeVideo);
     overlay.addEventListener("click", (e)=>{ if(e.target === overlay) closeVideo(); });
     const replayBtn = document.getElementById("replayVideoBtn");
     if(replayBtn) replayBtn.addEventListener("click", openVideo);
-
-    // تهيئة هادئة للفيديو قبل التشغيل
-    window.addEventListener("load", ()=>{ setTimeout(primeVideo, 1200); }, { once:true });
 
     // يشتغل عند ظهور giftBox
     const giftBox = document.getElementById("giftBox");
     if(giftBox){
       const obs = new MutationObserver(()=>{
         if(giftBox.style.display && giftBox.style.display !== "none"){
-          primeVideo();
           setTimeout(openVideo, 400);
           obs.disconnect();
         }
@@ -3215,5 +3157,28 @@ document.addEventListener("DOMContentLoaded", () => {
   }})();
 });
 </script>
+
+<style>
+/* Disable popup video */
+.video-popup, #videoPopup, .overlay, #overlay { display:none !important; }
+</style>
+
+<!-- Added inline video under message -->
+<div id="videoSection" style="margin-top:20px; text-align:center;">
+  <video 
+    id="birthdayVideo"
+    controls
+    preload="none"
+    playsinline
+    style="
+      width:100%;
+      max-width:320px;
+      border-radius:20px;
+      box-shadow:0 10px 25px rgba(0,0,0,0.2);
+    ">
+    <source src="video.mp4" type="video/mp4">
+  </video>
+</div>
+
 </body>
 </html>
