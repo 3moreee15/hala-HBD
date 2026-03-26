@@ -471,27 +471,7 @@
   }
 
 
-  /* ===== video loading spinner ===== */
-  .videoBox .videoLoader{
-    display: none;
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,.45);
-    border-radius: 22px;
-    z-index: 3;
-    align-items: center;
-    justify-content: center;
-  }
-  .videoBox .videoLoader.active{ display: flex; }
-  .videoLoader::after{
-    content: "";
-    width: 42px; height: 42px;
-    border: 4px solid rgba(255,255,255,.3);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spinLoader .7s linear infinite;
-  }
-  @keyframes spinLoader{ to{ transform: rotate(360deg); } }
+
 
   /* ===== ظرف التهنئة ===== */
   .envelopeWrap{
@@ -1512,6 +1492,29 @@
       </div>
       <div id="giftText"></div>
 
+      <!-- فيديو التهنئة مدمج تحت الرسالة -->
+      <div id="inlineVideoWrap" style="
+        display:none;
+        margin-top:14px;
+        border-radius:18px;
+        overflow:hidden;
+        box-shadow: 0 12px 36px rgba(0,0,0,.18);
+        position:relative;
+      ">
+        <button id="videoCloseBtn" style="
+          position:absolute; top:8px; left:8px;
+          width:30px; height:30px;
+          border-radius:50%; border:none;
+          background:rgba(0,0,0,.5);
+          color:#fff; font-size:14px;
+          cursor:pointer; z-index:2;
+          display:grid; place-items:center;
+        ">✕</button>
+        <video id="celebVideo" src="hala.mp4" playsinline controls
+          style="width:100%; display:block; border-radius:18px;">
+        </video>
+      </div>
+
       <!-- زر إعادة الفيديو — آخر شي في التهنئة -->
       <button class="shareBtn" id="replayVideoBtn" style="margin-top:10px; background:linear-gradient(135deg,#ff7fc3,#ff4fa3); border:none; color:#fff;">🔁 إعادة الفيديو</button>
 
@@ -1658,7 +1661,6 @@
     <div class="videoBox">
       <button class="videoCloseBtn" id="videoCloseBtn">✕</button>
       <div class="videoLoader" id="videoLoader"></div>
-      <video id="celebVideo" preload="auto" src="hala.mp4" playsinline></video>
     </div>
   </div>
 
@@ -3005,38 +3007,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // ===== popup الفيديو =====
-  (function initVideoPopup(){
-    const overlay  = document.getElementById("videoOverlay");
+  (function initInlineVideo(){
     const video    = document.getElementById("celebVideo");
+    const wrap     = document.getElementById("inlineVideoWrap");
     const closeBtn = document.getElementById("videoCloseBtn");
-    if(!overlay || !video) return;
+    const replayBtn= document.getElementById("replayVideoBtn");
 
-    function openVideo(){
-      if(!overlay || !video) return;
-      overlay.classList.add("show");
+    function showVideo(){
+      if(!wrap || !video) return;
+      wrap.style.display = "block";
       video.currentTime = 0;
       video.play().catch(()=>{});
+      setTimeout(()=> wrap.scrollIntoView({behavior:"smooth", block:"center"}), 100);
     }
 
-    function closeVideo(){
-      overlay.classList.remove("show");
+    function hideVideo(){
+      if(!wrap || !video) return;
       video.pause();
-      video.currentTime = 0;
+      wrap.style.display = "none";
     }
 
-    // يختفي لحاله لما يخلص الفيديو
-    video.addEventListener("ended", closeVideo);
-    closeBtn.addEventListener("click", closeVideo);
-    overlay.addEventListener("click", (e)=>{ if(e.target === overlay) closeVideo(); });
-    const replayBtn = document.getElementById("replayVideoBtn");
-    if(replayBtn) replayBtn.addEventListener("click", openVideo);
+    if(closeBtn)  closeBtn.addEventListener("click", hideVideo);
+    if(replayBtn) replayBtn.addEventListener("click", showVideo);
 
-    // يشتغل عند ظهور giftBox
     const giftBox = document.getElementById("giftBox");
     if(giftBox){
       const obs = new MutationObserver(()=>{
         if(giftBox.style.display && giftBox.style.display !== "none"){
-          setTimeout(openVideo, 400);
+          setTimeout(showVideo, 600);
           obs.disconnect();
         }
       });
@@ -3157,28 +3155,5 @@ document.addEventListener("DOMContentLoaded", () => {
   }})();
 });
 </script>
-
-<style>
-/* Disable popup video */
-.video-popup, #videoPopup, .overlay, #overlay { display:none !important; }
-</style>
-
-<!-- Added inline video under message -->
-<div id="videoSection" style="margin-top:20px; text-align:center;">
-  <video 
-    id="birthdayVideo"
-    controls
-    preload="none"
-    playsinline
-    style="
-      width:100%;
-      max-width:320px;
-      border-radius:20px;
-      box-shadow:0 10px 25px rgba(0,0,0,0.2);
-    ">
-    <source src="video.mp4" type="video/mp4">
-  </video>
-</div>
-
 </body>
 </html>
