@@ -2268,6 +2268,113 @@ body.dark .gameOverlay{
 body.dark .gameOverlayTitle{ color:#d3418f !important; }
 body.dark .gameOverlayScore{ color:#b95186 !important; opacity:1 !important; }
 
+
+/* ===== EXACT QUIZ CENTER FIX ===== */
+#quizBox,
+.quiz,
+.quizStage,
+#answerArea{
+  width:100% !important;
+}
+
+.quizStage{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+
+#answerArea{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  margin-inline:auto !important;
+  text-align:center !important;
+}
+
+.msgCard{
+  width:min(100%, 360px) !important;
+  margin:0 auto 12px !important;
+}
+
+.qBtn,
+.heartBtn{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  flex:0 0 auto !important;
+  width:min(100%, 320px) !important;
+  margin-inline:auto !important;
+}
+
+.ageWrap{
+  width:min(100%, 320px) !important;
+  margin-inline:auto !important;
+}
+
+.moveArea{
+  width:min(100%, 320px) !important;
+  margin-inline:auto !important;
+  position:relative !important;
+  height:74px !important;
+}
+
+.movingBtn{
+  left:50% !important;
+  transform:translateX(-50%) !important;
+  width:min(100%, 320px) !important;
+}
+
+body.question-focus .quiz{
+  margin-inline:auto !important;
+}
+
+body.question-focus .quizStage{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+
+
+
+  /* ===== FINAL IMAGE CENTER FIX ===== */
+  .fadeSlider{
+    width: min(100%, 320px) !important;
+    margin-inline: auto !important;
+    display: block !important;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .fadeSlide{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center !important;
+    display: block;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+  }
+
+  .iconWrapper{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .titleIcon{
+    width: 34px;
+    height: 34px;
+    object-fit: cover;
+    object-position: center center !important;
+    display: block;
+  }
 </style>
 </head>
 
