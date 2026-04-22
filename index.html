@@ -452,19 +452,50 @@
   }
   .shake{ animation: shake 360ms ease; }
 
-  .heart{
+  .cakeBurst{
     position:fixed;
-    font-size:18px;
-    opacity:.9;
-    animation: pop 1.2s ease forwards;
     pointer-events:none;
-    filter: drop-shadow(0 6px 10px rgba(255,79,163,.22));
-    z-index:6;
+    z-index:999;
+    transform:translate(-50%,-50%);
+    animation: cakeBurstFloat 1.55s cubic-bezier(.2,.9,.2,1) forwards;
+    filter: drop-shadow(0 10px 18px rgba(255,79,163,.22));
   }
-  @keyframes pop{
-    0%{transform:translate(-50%,-50%) scale(.6); opacity:0}
-    20%{opacity:1}
-    100%{transform:translate(-50%,-140%) scale(1.25); opacity:0}
+  .cakeBurstEmoji{
+    font-size:34px;
+    line-height:1;
+    display:block;
+    text-align:center;
+  }
+  .cakeBurstNum{
+    position:absolute;
+    top:-18px;
+    left:50%;
+    transform:translateX(-50%);
+    min-width:34px;
+    padding:3px 9px;
+    border-radius:999px;
+    font-size:16px;
+    font-weight:950;
+    color:#fff;
+    background:linear-gradient(135deg,#ff4fa3,#ff7fc3);
+    box-shadow:0 6px 14px rgba(255,79,163,.26);
+    border:1px solid rgba(255,255,255,.65);
+  }
+  .cakeSpark{
+    position:absolute;
+    font-size:14px;
+    opacity:.95;
+    animation: cakeSparkFly 1.15s ease forwards;
+  }
+  @keyframes cakeBurstFloat{
+    0%{ transform:translate(-50%,-50%) scale(.55) rotate(-12deg); opacity:0; }
+    18%{ opacity:1; }
+    100%{ transform:translate(-50%,-185%) scale(1.28) rotate(10deg); opacity:0; }
+  }
+  @keyframes cakeSparkFly{
+    0%{ transform:translate(0,0) scale(.6); opacity:0; }
+    20%{ opacity:1; }
+    100%{ transform:translate(var(--dx), var(--dy)) scale(1.15) rotate(var(--rot)); opacity:0; }
   }
   .confetti{
     position:fixed;
@@ -561,170 +592,7 @@
 
 
 
-  /* ===== ظرف التهنئة ===== */
-  .envelopeWrap{
-    display: none;
-    margin-top: 20px;
-    position: relative;
-    z-index: 2;
-    touch-action: none;
-  }
-  .envelopeWrap.show{ display: block; }
 
-  .envScene{
-    width: min(88vw, 320px);
-    margin: 0 auto;
-    position: relative;
-    height: 250px;
-    perspective: 1200px;
-  }
-
-  /* الظرف الكامل */
-  .envBody{
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 195px;
-    background: linear-gradient(160deg, #fff2f8 0%, #ffe6f1 58%, #ffd9ea 100%);
-    border-radius: 18px;
-    border: 2px solid rgba(255,255,255,.72);
-    box-shadow: 0 22px 46px rgba(255,79,163,.22);
-    z-index: 1;
-    overflow: hidden;
-  }
-  /* غطاء مثلث فوق */
-  .envFlap{
-    position: absolute;
-    top: 0; left: -1px; right: -1px;
-    height: 0;
-    border-left: 160px solid transparent;
-    border-right: 160px solid transparent;
-    border-top: 96px solid #ffb4d6;
-    z-index: 4;
-    filter: drop-shadow(0 6px 10px rgba(255,79,163,.12));
-  }
-  .envLeft{
-    position: absolute; inset: 0;
-    background: linear-gradient(135deg, #ffd0e6 0%, transparent 58%);
-    clip-path: polygon(0 0, 0 100%, 50% 58%);
-    z-index: 3;
-  }
-  .envRight{
-    position: absolute; inset: 0;
-    background: linear-gradient(225deg, #ffd0e6 0%, transparent 58%);
-    clip-path: polygon(100% 0, 100% 100%, 50% 58%);
-    z-index: 3;
-  }
-  .envBottomLine{
-    position: absolute; inset: 0;
-    background: linear-gradient(to top, #ffb3d5 0%, transparent 60%);
-    clip-path: polygon(0 100%, 50% 58%, 100% 100%);
-    z-index: 3;
-  }
-  /* قلب صغير في وسط الظرف */
-  .envCenter{
-    position: absolute;
-    top: 62%; left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 30px;
-    z-index: 5;
-    animation: heartbeat 1.4s ease-in-out infinite;
-    filter: drop-shadow(0 3px 8px rgba(255,79,163,.35));
-  }
-  @keyframes heartbeat{
-    0%,100%{ transform: translate(-50%,-50%) scale(1); }
-    35%{ transform: translate(-50%,-50%) scale(1.2); }
-    65%{ transform: translate(-50%,-50%) scale(.92); }
-  }
-
-  /* الورقة — طرفها بيّن من الزاوية اليمين فوق */
-  .envLetter{
-    position: absolute;
-    top: 8px;
-    left: 50%;
-    width: min(72vw, 210px);
-    height: 285px;
-    background:
-      linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,248,252,.98)),
-      repeating-linear-gradient(180deg, transparent 0 24px, rgba(255,79,163,.06) 24px 25px);
-    border-radius: 10px;
-    border: 1px solid rgba(255,185,218,.95);
-    box-shadow: 0 18px 32px rgba(255,79,163,.18);
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 8px;
-    cursor: grab;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-    will-change: transform;
-    transform: translateX(-50%) translateY(92px) rotate(-2deg);
-    transform-origin: center bottom;
-    transition: box-shadow .2s ease;
-    overflow: hidden;
-    padding-top: 20px;
-  }
-  .envLetter:active{ cursor: grabbing; box-shadow: 0 24px 40px rgba(255,79,163,.28); }
-  .envLetter::before{
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 18px;
-    background: linear-gradient(180deg, rgba(255,226,240,.92), rgba(255,255,255,0));
-  }
-  .envLetter::after{
-    content: "";
-    position: absolute;
-    top: 14px; right: 16px;
-    width: 52px; height: 14px;
-    border-radius: 999px;
-    background: rgba(255,79,163,.12);
-    box-shadow: 0 0 0 1px rgba(255,79,163,.06) inset;
-  }
-  .envLetterIcon{ font-size: 22px; animation: peekBounce 2s ease-in-out infinite; margin-top: 2px; }
-  @keyframes peekBounce{
-    0%,100%{ transform: translateY(0) rotate(0deg); }
-    50%{ transform: translateY(-4px) rotate(-5deg); }
-  }
-  .envLetterLine{
-    width: 74%; height: 4px;
-    background: linear-gradient(90deg, rgba(255,79,163,.20), rgba(255,127,195,.32));
-    border-radius: 999px; opacity: 1;
-  }
-  .envLetterLine2{ width: 58%; }
-
-  /* hint */
-  .envHint{
-    position: absolute;
-    top: -30px; left: 50%;
-    transform: translateX(-50%);
-    font-size: 12px; font-weight: 900;
-    color: var(--accent); opacity: .9;
-    white-space: nowrap;
-    animation: hintBounce 1.6s ease-in-out infinite;
-    background: rgba(255,255,255,.82);
-    padding: 6px 12px;
-    border-radius: 999px;
-    border: 1px solid rgba(255,185,218,.75);
-    box-shadow: 0 8px 20px rgba(255,79,163,.10);
-    z-index: 8;
-  }
-  @keyframes hintBounce{
-    0%,100%{ transform: translateY(0); }
-    50%{ transform: translateY(-4px); }
-  }
-
-  /* Gift box يطلع بعد الظرف */
-  .gift.fromEnvelope{
-    animation: letterReveal .7s cubic-bezier(.2,.9,.2,1) forwards;
-  }
-  @keyframes letterReveal{
-    from{ opacity:0; transform: translateY(24px) scale(.96); }
-    to{   opacity:1; transform: translateY(0) scale(1); }
-  }
 
 
   /* ===== عداد عيد الميلاد القادم ===== */
@@ -1002,6 +870,468 @@
     background: linear-gradient(90deg, var(--accent), var(--accent2));
     transition: width 5s linear;
   }
+
+
+  /* ===== مرحلة الكيكة التفاعلية ===== */
+  .cakeStageOverlay{
+    position: fixed;
+    inset: 0;
+    z-index: 99995;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+    background: rgba(8,4,12,.48);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .28s ease;
+  }
+  .cakeStageOverlay.show{
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .cakeStageCard{
+    width: min(92vw, 420px);
+    border-radius: 34px;
+    padding: 22px 18px 20px;
+    background:
+      radial-gradient(circle at 20% 15%, rgba(255,255,255,.22), transparent 25%),
+      linear-gradient(180deg, rgba(38,16,34,.96), rgba(20,8,20,.98));
+    border: 1px solid rgba(255,255,255,.12);
+    box-shadow:
+      0 24px 70px rgba(0,0,0,.42),
+      inset 0 0 0 1px rgba(255,255,255,.04);
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    transform: scale(.92) translateY(18px);
+    transition: transform .3s cubic-bezier(.2,.9,.2,1);
+  }
+  .cakeStageOverlay.show .cakeStageCard{
+    transform: scale(1) translateY(0);
+  }
+  .cakeStageCard::before{
+    content:"";
+    position:absolute;
+    inset:auto auto -70px -70px;
+    width:220px; height:220px;
+    border-radius:50%;
+    background: radial-gradient(circle, rgba(255,255,255,.40), rgba(255,255,255,0) 70%);
+    opacity:.55;
+    pointer-events:none;
+  }
+  .cakeStageNow{
+    color:#fff;
+    font-size: 14px;
+    font-weight: 950;
+    margin-bottom: 10px;
+  }
+  .cakeStageMsg{
+    width: min(100%, 320px);
+    margin: 0 auto 18px;
+    padding: 20px 18px;
+    border-radius: 28px;
+    background: linear-gradient(180deg, #ff5db4, #e2449f);
+    box-shadow: 0 16px 38px rgba(255,79,163,.24);
+    color:#fff;
+  }
+  .cakeStageMsg h3{
+    margin:0 0 10px;
+    font-size: clamp(22px, 5vw, 32px);
+    line-height: 1.5;
+    font-weight: 950;
+  }
+  .cakeStageMsg p{
+    margin:0;
+    font-size: clamp(15px, 3.5vw, 20px);
+    line-height: 1.8;
+    color: rgba(255,255,255,.9);
+    font-weight: 800;
+  }
+  .cakeStageBtnWrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap: 12px;
+  }
+  .cakeStageCake{
+    border:none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* ===== كيكة 3 طبقات فاخرة ===== */
+  .cakeStageInner{
+    width: 280px;
+    height: 340px;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    position: relative;
+    border-radius: 42px;
+    transition: transform .18s cubic-bezier(.2,.9,.2,1), filter .18s ease;
+    isolation:isolate;
+  }
+  .cakeStageCake:hover .cakeStageInner,
+  .cakeStageCake:active .cakeStageInner{
+    transform: scale(1.04) translateY(-4px);
+    filter: drop-shadow(0 24px 44px rgba(255,79,163,.32));
+  }
+
+  /* القاعدة البيضاوية */
+  .cakeStagePlate{
+    position:absolute;
+    bottom: 6px;
+    left:50%;
+    transform: translateX(-50%);
+    width: 210px;
+    height: 20px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #fff 0%, #e8e8f0 100%);
+    box-shadow:
+      0 14px 26px rgba(60,40,80,.22),
+      inset 0 3px 0 rgba(255,255,255,1);
+  }
+
+  /* ===== الطبقة السفلى (بنفسجي/أزرق) ===== */
+  .cakeTier1{
+    position:absolute;
+    bottom: 22px;
+    left:50%;
+    transform: translateX(-50%);
+    width: 190px;
+    height: 88px;
+    border-radius: 16px 16px 12px 12px;
+    background: linear-gradient(180deg, #b8a9e8 0%, #9d8cd6 40%, #8878c8 100%);
+    box-shadow:
+      0 14px 30px rgba(100,70,180,.30),
+      inset 0 0 0 2px rgba(255,255,255,.30);
+    overflow:visible;
+    z-index:1;
+  }
+  /* زينة نقاط على الطبقة السفلى */
+  .cakeTier1::after{
+    content:"";
+    position:absolute;
+    left: 10px; right: 10px; bottom: 14px;
+    height: 12px;
+    border-radius: 999px;
+    background:
+      radial-gradient(circle, rgba(255,220,100,.90) 0 4px, transparent 4.5px) 0 50%/28px 12px repeat-x;
+    opacity:.85;
+  }
+  /* كريمة الطبقة السفلى */
+  .cakeTier1Icing{
+    position:absolute;
+    top: -10px; left:-3px; right:-3px;
+    height: 28px;
+    background: linear-gradient(180deg, #fff 0%, #f5f0fe 70%);
+    border-radius: 14px 14px 8px 8px;
+    box-shadow: inset 0 -3px 0 rgba(180,160,220,.4);
+    overflow:visible;
+    z-index:5;
+  }
+  .cakeTier1Drip{
+    position:absolute;
+    top: 16px;
+    background: linear-gradient(180deg, #f8f5ff, #ece5ff);
+    border-radius: 0 0 14px 14px;
+  }
+  .cakeTier1Drip.d1{ right:16px;  width:18px; height:32px; }
+  .cakeTier1Drip.d2{ right:46px;  width:14px; height:22px; }
+  .cakeTier1Drip.d3{ left:18px;   width:18px; height:28px; }
+  .cakeTier1Drip.d4{ left:50px;   width:14px; height:18px; }
+  .cakeTier1Drip.d5{ left:50%; transform:translateX(-50%); width:16px; height:34px; }
+
+  /* ===== الطبقة الوسطى (ذهبي/بيج) ===== */
+  .cakeTier2{
+    position:absolute;
+    bottom: 106px;
+    left:50%;
+    transform: translateX(-50%);
+    width: 152px;
+    height: 76px;
+    border-radius: 14px 14px 10px 10px;
+    background: linear-gradient(180deg, #f5d080 0%, #e8b840 40%, #d4a020 100%);
+    box-shadow:
+      0 12px 24px rgba(160,120,0,.28),
+      inset 0 0 0 2px rgba(255,255,255,.28);
+    overflow:visible;
+    z-index:2;
+  }
+  .cakeTier2::after{
+    content:"";
+    position:absolute;
+    left: 8px; right: 8px; bottom: 12px;
+    height: 10px;
+    border-radius: 999px;
+    background:
+      radial-gradient(circle, rgba(255,255,255,.88) 0 3.5px, transparent 4px) 0 50%/22px 10px repeat-x;
+    opacity:.80;
+  }
+  .cakeTier2Icing{
+    position:absolute;
+    top: -10px; left:-3px; right:-3px;
+    height: 26px;
+    background: linear-gradient(180deg, #fff 0%, #fff9ec 70%);
+    border-radius: 13px 13px 7px 7px;
+    box-shadow: inset 0 -3px 0 rgba(200,170,80,.35);
+    overflow:visible;
+    z-index:5;
+  }
+  .cakeTier2Drip{
+    position:absolute;
+    top: 16px;
+    background: linear-gradient(180deg, #fffef5, #fff8dc);
+    border-radius: 0 0 12px 12px;
+  }
+  .cakeTier2Drip.d1{ right:12px; width:15px; height:26px; }
+  .cakeTier2Drip.d2{ right:36px; width:12px; height:18px; }
+  .cakeTier2Drip.d3{ left:14px;  width:15px; height:22px; }
+  .cakeTier2Drip.d4{ left:40px;  width:12px; height:16px; }
+
+  /* ===== الطبقة العلوية (وردي) ===== */
+  .cakeTier3{
+    position:absolute;
+    bottom: 178px;
+    left:50%;
+    transform: translateX(-50%);
+    width: 114px;
+    height: 64px;
+    border-radius: 12px 12px 8px 8px;
+    background: linear-gradient(180deg, #f0a0b8 0%, #e07898 45%, #cc5a80 100%);
+    box-shadow:
+      0 10px 22px rgba(200,80,120,.28),
+      inset 0 0 0 2px rgba(255,255,255,.28);
+    overflow:visible;
+    z-index:3;
+  }
+  .cakeTier3::after{
+    content:"";
+    position:absolute;
+    left: 6px; right: 6px; bottom: 10px;
+    height: 9px;
+    border-radius: 999px;
+    background:
+      radial-gradient(circle, rgba(255,255,255,.85) 0 3px, transparent 3.5px) 0 50%/18px 9px repeat-x;
+    opacity:.80;
+  }
+  .cakeTier3Icing{
+    position:absolute;
+    top: -10px; left:-3px; right:-3px;
+    height: 24px;
+    background: linear-gradient(180deg, #fff 0%, #fff4f8 70%);
+    border-radius: 12px 12px 6px 6px;
+    box-shadow: inset 0 -3px 0 rgba(220,140,160,.4);
+    overflow:visible;
+    z-index:5;
+  }
+  .cakeTier3Drip{
+    position:absolute;
+    top: 14px;
+    background: linear-gradient(180deg, #fffcfd, #fff0f5);
+    border-radius: 0 0 10px 10px;
+  }
+  .cakeTier3Drip.d1{ right:10px; width:13px; height:22px; }
+  .cakeTier3Drip.d2{ right:30px; width:10px; height:15px; }
+  .cakeTier3Drip.d3{ left:12px;  width:13px; height:18px; }
+
+  /* ===== الشمعة فوق الطبقة العلوية ===== */
+  .cakeStageCandles{
+    position:absolute;
+    bottom: 240px;
+    left:50%;
+    transform: translateX(-50%);
+    display:flex;
+    align-items:flex-end;
+    gap: 0;
+    z-index:6;
+  }
+  .cakeStageCandle{
+    width: 16px;
+    height: 52px;
+    border-radius: 6px 6px 4px 4px;
+    position:relative;
+    /* خطوط أفقية مثل الشمعة في الفيديو */
+    background: repeating-linear-gradient(
+      180deg,
+      #ff6b9d 0px 8px,
+      #fff 8px 16px
+    );
+    box-shadow: 0 6px 16px rgba(0,0,0,.15);
+  }
+  .cakeStageCandle::after{
+    content:"";
+    position:absolute;
+    top: -6px;
+    left:50%;
+    transform:translateX(-50%);
+    width: 2px;
+    height: 7px;
+    background: #3a1a0a;
+    border-radius:999px;
+  }
+  /* اللهب */
+  .cakeStageFlame{
+    position:absolute;
+    top: -26px;
+    left:50%;
+    width: 15px;
+    height: 24px;
+    transform: translateX(-50%);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    background: radial-gradient(ellipse at 50% 28%, #fffac8 0 16%, #ffe040 17% 50%, #ff9e18 51% 80%, #ff5500 81% 100%);
+    box-shadow:
+      0 0 14px 5px rgba(255,180,40,.50),
+      0 0 32px 10px rgba(255,120,30,.25);
+    animation: candleFlicker .75s ease-in-out infinite alternate;
+    z-index:7;
+  }
+  .cakeStageFlame::before{
+    content:"";
+    position:absolute;
+    left:50%; top:36%;
+    width: 7px; height: 11px;
+    transform: translate(-50%,-50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, #fffde0 0 45%, transparent 100%);
+    opacity:.92;
+  }
+  .cakeStageFlame::after{
+    content:"";
+    position:absolute;
+    left:50%; top:62%;
+    width: 4px; height: 6px;
+    transform: translate(-50%,-50%);
+    border-radius:50%;
+    background:#fff8e4;
+    opacity:.82;
+  }
+
+  /* ===== رقم 18 ===== */
+  .cakeStageNum{
+    position:absolute;
+    bottom: 183px;
+    left:50%;
+    transform: translateX(-50%);
+    font-size: 0px; /* مخفي — الرقم يكون فوق الكيكة مش داخلها */
+    z-index:5;
+  }
+
+  /* ===== بالونات حول الكيكة ===== */
+  .cakeStageSparkles{
+    position:absolute;
+    inset: 0;
+    pointer-events:none;
+  }
+  .cakeStageSpark{
+    position:absolute;
+    animation: balloonFloat 2.2s ease-in-out infinite;
+  }
+  /* بالون وردي يسار */
+  .cakeStageSpark.s1{
+    bottom: 120px; left: -8px;
+    font-size: 42px;
+    animation-delay: .0s;
+    filter: drop-shadow(0 8px 14px rgba(0,0,0,.18));
+  }
+  /* بالون أصفر يسار */
+  .cakeStageSpark.s2{
+    bottom: 60px; left: 10px;
+    font-size: 36px;
+    animation-delay: .6s;
+    filter: drop-shadow(0 8px 14px rgba(0,0,0,.15));
+  }
+  /* بالون أزرق يمين */
+  .cakeStageSpark.s3{
+    bottom: 90px; right: 0px;
+    font-size: 40px;
+    animation-delay: 1.1s;
+    filter: drop-shadow(0 8px 14px rgba(0,0,0,.16));
+  }
+  /* نجوم صغيرة */
+  .cakeStageSpark.s4{
+    top: 30px; left: 40px;
+    font-size: 16px;
+    animation-delay: .4s;
+    color: #fffacc;
+  }
+  .cakeStageSpark.s5{
+    top: 50px; right: 42px;
+    font-size: 14px;
+    animation-delay: 1.4s;
+    color: #fffacc;
+  }
+
+  /* قلوب طائرة */
+  .cakeStageHeart{
+    position:absolute;
+    font-size:14px;
+    opacity:0;
+    animation: heartFloat 2.8s ease-in-out infinite;
+    pointer-events:none;
+  }
+  .cakeStageHeart.h1{ bottom:200px; left:24px;  animation-delay:.3s; }
+  .cakeStageHeart.h2{ bottom:220px; right:22px; animation-delay:1.2s; }
+  .cakeStageHeart.h3{ bottom:180px; right:40px; animation-delay:2.0s; font-size:11px; }
+  @keyframes heartFloat{
+    0%   { opacity:0; transform:translateY(0) scale(.7); }
+    20%  { opacity:1; }
+    100% { opacity:0; transform:translateY(-50px) scale(1.1) rotate(12deg); }
+  }
+
+  .cakeStageTap{
+    font-size: 18px;
+    font-weight: 900;
+    color: #fff4fb;
+    opacity: .98;
+    text-shadow: 0 4px 14px rgba(0,0,0,.22);
+    animation: tapPulse 1.8s ease-in-out infinite;
+  }
+  @keyframes tapPulse{
+    0%,100%{ transform:scale(1); opacity:.98; }
+    50%{ transform:scale(1.04); opacity:1; }
+  }
+  @keyframes balloonFloat{
+    0%,100%{ transform: translateY(0) rotate(-3deg); }
+    50%{ transform: translateY(-10px) rotate(3deg); }
+  }
+
+  .cakeStageCake.pop .cakeStageInner{
+    animation: cakeExplodePop .7s cubic-bezier(.2,.9,.2,1);
+  }
+  .cakeStageCake.pop .cakeStageFlame{
+    animation: flameOut .45s ease forwards;
+  }
+  @keyframes candleFlicker{
+    0%{ transform: translateX(-50%) scaleX(1) rotate(-5deg); filter:brightness(1); }
+    100%{ transform: translateX(-50%) scaleX(1.12) rotate(5deg); filter:brightness(1.14); }
+  }
+  @keyframes cakeExplodePop{
+    0%{ transform: scale(1); }
+    35%{ transform: scale(1.10) rotate(-3deg); }
+    60%{ transform: scale(.95) rotate(3deg); }
+    100%{ transform: scale(1.12); }
+  }
+  @keyframes flameOut{
+    to{ opacity:0; transform: translateX(-50%) translateY(-20px) scale(.3); }
+  }
+  @media (max-width:520px){
+    .cakeStageCard{ padding: 18px 14px 18px; border-radius: 28px; }
+    .cakeStageMsg{ padding: 18px 14px; border-radius: 24px; }
+    .cakeStageInner{ width: 248px; height: 300px; }
+    .cakeStagePlate{ width: 186px; }
+    .cakeTier1{ width: 170px; height: 78px; bottom: 20px; }
+    .cakeTier2{ width: 136px; height: 68px; bottom: 94px; }
+    .cakeTier3{ width: 102px; height: 58px; bottom: 158px; }
+    .cakeStageCandles{ bottom: 214px; }
+    .cakeStageNum{ bottom: 162px; }
+  }
+
 
   .toast{
     position:fixed;
@@ -1368,6 +1698,42 @@
     8%  { opacity: 1; }
     90% { opacity: 1; }
     100%{ transform: translateY(110vh) rotate(var(--r)) scale(1.1); opacity:0; }
+  }
+
+  .floatingCakes{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+    overflow:hidden;
+  }
+  .floatingCake{
+    position:absolute;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    color:#fff;
+    opacity:.88;
+    filter: drop-shadow(0 12px 20px rgba(255,79,163,.16));
+    animation: floatCake 8s ease-in-out infinite alternate;
+  }
+  .floatingCakeEmoji{ font-size: clamp(22px, 4vw, 42px); line-height:1; }
+  .floatingCakeNum{
+    position:absolute;
+    top:-12px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size: clamp(12px, 2vw, 18px);
+    font-weight:950;
+    padding:2px 8px;
+    border-radius:999px;
+    background:linear-gradient(135deg,#ff4fa3,#ff7fc3);
+    border:1px solid rgba(255,255,255,.7);
+    box-shadow:0 6px 16px rgba(255,79,163,.18);
+  }
+  @keyframes floatCake{
+    0%{ transform: translateY(0) rotate(-4deg) scale(.96); }
+    100%{ transform: translateY(-12px) rotate(4deg) scale(1.04); }
   }
 
   .bubble{
@@ -2380,10 +2746,7 @@ body.question-focus .quizStage{
 
 <body class="dark">
   <canvas id="particles"></canvas>
-  <div class="bgGrid"></div>
-  <div class="bgNoise"></div>
   <div class="aurora"></div>
-  <div class="sparkle"></div>
 
   <div class="waveWrap" aria-hidden="true">
     <svg viewBox="0 0 1440 320" preserveAspectRatio="none">
@@ -2455,27 +2818,7 @@ body.question-focus .quizStage{
       </div>
     </div>
 
-    <!-- ظرف التهنئة -->
-    <div class="envelopeWrap" id="envelopeWrap">
-      <div class="envScene">
-        <!-- hint فوق الورقة -->
-        <div class="envHint" id="envHint">اسحبي الورقة 💌</div>
-        <!-- الظرف الكامل -->
-        <div class="envBody">
-          <div class="envFlap"></div>
-          <div class="envLeft"></div>
-          <div class="envRight"></div>
-          <div class="envBottomLine"></div>
-          <div class="envCenter">💖</div>
-        </div>
-        <!-- طرف الورقة من الزاوية اليمين فوق -->
-        <div class="envLetter" id="envLetter">
-          <div class="envLetterIcon">💌</div>
-          <div class="envLetterLine"></div>
-          <div class="envLetterLine envLetterLine2"></div>
-        </div>
-      </div>
-    </div>
+
 
     <div class="gift" id="giftBox">
       <div class="ribbon">💖 تهنئة</div>
@@ -2558,7 +2901,7 @@ body.question-focus .quizStage{
       </div>
     </div>
 
-    <p class="hint preQuizHidden">تلميح: اسحبي على الصورة يمين/يسار للتغيير ✨ واضغطي داخل البطاقة تطلع قلوب 💗</p>
+    <p class="hint preQuizHidden">تلميح: اسحبي على الصورة يمين/يسار للتغيير ✨ واضغطي داخل البطاقة تطلع كيكات 🎂</p>
 
     <!-- عداد عيد الميلاد القادم -->
     <!-- لعبة اصطياد عمر وكنان -->
@@ -2633,7 +2976,7 @@ body.question-focus .quizStage{
     </div>
 
     <!-- زر توليد الصورة -->
-    <button class="shareBtn" id="shareBtn">📸 ولّدي صورة التهنئة وشاركيها</button>
+    <button class="shareBtn" id="shareBtn">📸 ولّدي صورة كيكة 18 وشاركيها</button>
     <canvas id="shareCanvas"></canvas>
 
   </div>
@@ -2837,7 +3180,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function burst(){
     const symbols=["💗","✨","🎀","🌸","🎂","💞","⭐️"];
     // قللنا العدد من 16 إلى 9 لتخفيف الأداء
-    for(let i=0;i<9;i++){
+    for(let i=0;i<5;i++){
       const s=document.createElement("div");
       s.className="confetti";
       s.textContent=symbols[Math.floor(Math.random()*symbols.length)];
@@ -2857,18 +3200,49 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // ===== قلوب الكارد =====
+  // ===== انفجار كيكة داخل الكارد =====
+  function spawnCakeBurst(x, y, options = {}){
+    const burst = document.createElement("div");
+    burst.className = "cakeBurst";
+    burst.style.left = x + "px";
+    burst.style.top = y + "px";
+
+    const num = document.createElement("div");
+    num.className = "cakeBurstNum";
+    num.textContent = options.number || "18";
+
+    const emoji = document.createElement("div");
+    emoji.className = "cakeBurstEmoji";
+    emoji.textContent = options.emoji || "🎂";
+
+    burst.appendChild(num);
+    burst.appendChild(emoji);
+
+    const sparks = options.sparks || ["✨","💖","🎉","🩷","🎀"];
+    const sparkCount = options.sparkCount || 7;
+    for(let i = 0; i < sparkCount; i++){
+      const sp = document.createElement("div");
+      sp.className = "cakeSpark";
+      sp.textContent = sparks[Math.floor(Math.random() * sparks.length)];
+      const dx = (Math.random() * 90 - 45).toFixed(0) + "px";
+      const dy = (-40 - Math.random() * 70).toFixed(0) + "px";
+      const rot = (Math.random() * 80 - 40).toFixed(0) + "deg";
+      sp.style.setProperty("--dx", dx);
+      sp.style.setProperty("--dy", dy);
+      sp.style.setProperty("--rot", rot);
+      sp.style.left = (Math.random() * 16 - 8).toFixed(0) + "px";
+      sp.style.top = (Math.random() * 14 - 8).toFixed(0) + "px";
+      burst.appendChild(sp);
+    }
+
+    document.body.appendChild(burst);
+    setTimeout(()=> burst.remove(), 1600);
+  }
+
   if(card){
     card.addEventListener("click",(e)=>{
       if (e.target && e.target.closest("button, .sheet, .sheetOverlay")) return;
-
-      const heart=document.createElement("div");
-      heart.className="heart";
-      heart.textContent="💗";
-      heart.style.left=e.clientX+"px";
-      heart.style.top=e.clientY+"px";
-      document.body.appendChild(heart);
-      setTimeout(()=>heart.remove(),1200);
+      spawnCakeBurst(e.clientX, e.clientY);
     });
   }
 
@@ -3025,19 +3399,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }, dur - 300);
   }
 
-  // ===== مطر القلوب =====
+  // ===== مطر كيكات + قلوب + كونفتي =====
   function heartRain(){
-    const symbols = ["💗","💖","💞","💓","❤️","🩷","💕"];
-    const count = 55;
+    const symbols = ["🎂","✨","💖","🎉","🩷","🎀","💞"];
+    const count = 22;
     for(let i = 0; i < count; i++){
       setTimeout(()=>{
         const el = document.createElement("div");
         el.className = "rainHeart";
-        el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-        const size = 18 + Math.random() * 28;
+        const sym = symbols[Math.floor(Math.random() * symbols.length)];
+        el.textContent = sym;
+        const size = sym === "🎂" ? 28 + Math.random() * 22 : 16 + Math.random() * 22;
         const left = Math.random() * 100;
-        const dur  = 1.4 + Math.random() * 1.8;
-        const rot  = (Math.random() * 60 - 30) + "deg";
+        const dur  = 1.4 + Math.random() * 2.0;
+        const rot  = (Math.random() * 90 - 45) + "deg";
         el.style.cssText = `
           left:${left}vw;
           font-size:${size}px;
@@ -3046,7 +3421,7 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
         document.body.appendChild(el);
         setTimeout(()=> el.remove(), dur * 1000 + 100);
-      }, i * 38);
+      }, i * 34);
     }
   }
 
@@ -3211,7 +3586,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if(s.btn.type === "heart"){
-      qSmall.textContent = "هذا آخر شي… اضغطي القلب عشان تطلع المفاجأة ✨";
+      qSmall.textContent = "هذا آخر شي… اضغطي القلب عشان نكمل للمفاجأة ✨";
       answerArea.innerHTML = `
         <div class="heartBtn" id="heartBtn" role="button" aria-label="زر قلب">
           <span class="heartIcon">💗</span>
@@ -3220,88 +3595,109 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
       const heartBtn = $("heartBtn");
       if(heartBtn){
+        const openEnvelopeFlow = ()=>{
+          const quizBox = $("quizBox");
+          const giftBox = $("giftBox");
+          const giftText = $("giftText");
+          setQuestionFocus(false);
+          if(quizBox) quizBox.style.display = "none";
+          showToast("وصلتي للتهنئة 💖");
+          if(giftBox){ giftBox.style.display = "block"; giftBox.classList.add("fromEnvelope"); }
+          if(giftText) typeWriter(giftText, message, 3);
+          setTimeout(()=> giftBox?.scrollIntoView({behavior:"smooth", block:"start"}), 100);
+        };
+
+        const openCakeStage = ()=>{
+          let overlay = document.getElementById("cakeStageOverlay");
+          if(!overlay){
+            overlay = document.createElement("div");
+            overlay.className = "cakeStageOverlay";
+            overlay.id = "cakeStageOverlay";
+            overlay.innerHTML = `
+              <div class="cakeStageCard">
+                <div class="cakeStageNow">الآن</div>
+                <div class="cakeStageMsg">
+                  <h3>🎂 لو بتحبي عمر<br>اضغطي على الكيكة</h3>
+                  <p>هذا آخر شي... اضغطي الكيكة عشان تطلع المفاجأة ✨</p>
+                </div>
+                <div class="cakeStageBtnWrap">
+                  <button class="cakeStageCake" id="cakeStageCake" aria-label="كيكة تفاعلية">
+                    <div class="cakeStageInner">
+                      <div class="cakeStageSparkles">
+                        <span class="cakeStageSpark s1">🎈</span>
+                        <span class="cakeStageSpark s2">🎈</span>
+                        <span class="cakeStageSpark s3">🎈</span>
+                        <span class="cakeStageSpark s4">✦</span>
+                        <span class="cakeStageSpark s5">✦</span>
+                      </div>
+                      <span class="cakeStageHeart h1">💗</span>
+                      <span class="cakeStageHeart h2">💖</span>
+                      <span class="cakeStageHeart h3">🩷</span>
+                      <div class="cakeStageNum">18</div>
+                      <div class="cakeStageCandles">
+                        <div class="cakeStageCandle c1"><span class="cakeStageFlame"></span></div>
+                      </div>
+                      <div class="cakeTier3">
+                        <div class="cakeTier3Icing">
+                          <span class="cakeTier3Drip d1"></span>
+                          <span class="cakeTier3Drip d2"></span>
+                          <span class="cakeTier3Drip d3"></span>
+                        </div>
+                      </div>
+                      <div class="cakeTier2">
+                        <div class="cakeTier2Icing">
+                          <span class="cakeTier2Drip d1"></span>
+                          <span class="cakeTier2Drip d2"></span>
+                          <span class="cakeTier2Drip d3"></span>
+                          <span class="cakeTier2Drip d4"></span>
+                        </div>
+                      </div>
+                      <div class="cakeTier1">
+                        <div class="cakeTier1Icing">
+                          <span class="cakeTier1Drip d1"></span>
+                          <span class="cakeTier1Drip d2"></span>
+                          <span class="cakeTier1Drip d3"></span>
+                          <span class="cakeTier1Drip d4"></span>
+                          <span class="cakeTier1Drip d5"></span>
+                        </div>
+                      </div>
+                      <div class="cakeStagePlate"></div>
+                    </div>
+                  </button>
+                  <div class="cakeStageTap">اضغطي على الكيكة 🎂</div>
+                </div>
+              </div>`;
+            document.body.appendChild(overlay);
+          }
+          requestAnimationFrame(()=> overlay.classList.add("show"));
+          const cakeStageCake = document.getElementById("cakeStageCake");
+          if(cakeStageCake && !cakeStageCake._bound){
+            cakeStageCake._bound = true;
+            cakeStageCake.addEventListener("click", ()=>{
+              beep("heart");
+              playPartyPop();
+              cakeStageCake.classList.add("pop");
+              burst();
+              heartRain();
+              setTimeout(()=>burst(), 300);
+              setTimeout(()=>{
+                overlay.classList.remove("show");
+                setTimeout(()=>{
+                  overlay.remove();
+                  openEnvelopeFlow();
+                }, 320);
+              }, 520);
+            });
+          }
+        };
+
         heartBtn.addEventListener("click", ()=>{
           beep("heart");
           playPartyPop();
           heartBtn.classList.add("pressed");
           showToast("لحظة... 💗");
-
-          // مطر قلوب يغطي الشاشة كلها
-          heartRain();
-
-          setTimeout(()=>{
-            const quizBox = $("quizBox");
-            const giftBox = $("giftBox");
-            const giftText = $("giftText");
-            setQuestionFocus(false);
-            if(quizBox) quizBox.style.display = "none";
-            // أظهر الظرف أولاً
-            const envWrap = $("envelopeWrap");
-            if(envWrap){ envWrap.classList.add("show"); }
-            showToast("وصلتي للتهنئة 💖 افتحي الظرف!");
-            envWrap?.scrollIntoView({behavior:"smooth", block:"center"});
-            // سحب الورقة
-            const envLetter = $("envLetter");
-            const envHint   = $("envHint");
-            if(envLetter && !envLetter._bound){
-              envLetter._bound = true;
-              let startY = 0, startX = 0, currentY = 0, currentX = 0, isDragging = false;
-              const BASE_Y = 92;
-              const BASE_ROT = -2;
-              const THRESHOLD = 150; // لازم يطلع معظم الورقة
-
-              function setLetterTransform(offsetY = 0, offsetX = 0){
-                const pull = Math.max(0, Math.min(220, -offsetY));
-                const rot = BASE_ROT + (pull * 0.035) + (offsetX * 0.02);
-                envLetter.style.transform = `translateX(-50%) translateY(${BASE_Y + offsetY}px) rotate(${rot}deg)`;
-              }
-
-              function startDrag(e){
-                isDragging = true;
-                startY = (e.touches ? e.touches[0].clientY : e.clientY);
-                startX = (e.touches ? e.touches[0].clientX : e.clientX);
-                envLetter.style.transition = "none";
-              }
-              function moveDrag(e){
-                if(!isDragging) return;
-                const y = (e.touches ? e.touches[0].clientY : e.clientY);
-                const x = (e.touches ? e.touches[0].clientX : e.clientX);
-                currentY = Math.min(0, y - startY);
-                currentX = Math.max(-40, Math.min(40, x - startX));
-                setLetterTransform(currentY, currentX);
-                const progress = Math.min(1, Math.abs(currentY) / THRESHOLD);
-                if(envHint) envHint.style.opacity = 0.92 - (progress * 0.72);
-              }
-              function endDrag(){
-                if(!isDragging) return;
-                isDragging = false;
-                envLetter.style.transition = "transform .55s cubic-bezier(.2,.9,.2,1)";
-                if(Math.abs(currentY) >= THRESHOLD){
-                  envLetter.style.transform = "translateX(-50%) translateY(-250px) rotate(8deg)";
-                  if(envHint) envHint.style.opacity = 0;
-                  setTimeout(()=>{
-                    if(giftBox){ giftBox.style.display = "block"; giftBox.classList.add("fromEnvelope"); }
-                    if(giftText) typeWriter(giftText, message, 3);
-                    giftBox?.scrollIntoView({behavior:"smooth", block:"start"});
-                    envWrap.style.display = "none";
-                  }, 520);
-                } else {
-                  setLetterTransform(0, 0);
-                  if(envHint) envHint.style.opacity = 1;
-                }
-                currentY = 0; currentX = 0;
-              }
-
-              // Touch
-              envLetter.addEventListener("touchstart", startDrag, {passive:true});
-              envLetter.addEventListener("touchmove",  moveDrag,  {passive:true});
-              envLetter.addEventListener("touchend",   endDrag);
-              // Mouse
-              envLetter.addEventListener("mousedown",  startDrag);
-              document.addEventListener("mousemove",   moveDrag);
-              document.addEventListener("mouseup",     endDrag);
-            }
-          }, 1800);
+          burst();
+          setTimeout(openCakeStage, 900);
         });
       }
       return;
@@ -3398,22 +3794,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }, {threshold: 0.12});
   els.forEach(el=> io.observe(el));
 
-  // ===== فقاعات (مخففة) =====
-  (function bubbles(){
-    const icons = ["✨","💗","🎀","⭐️","🌸"];
-    // زدنا الفاصل الزمني من 1400 إلى 2500 لتخفيف الأداء
-    setInterval(()=>{
-      const b = document.createElement("div");
-      b.className = "bubble";
-      b.textContent = icons[(Math.random()*icons.length)|0];
-      b.style.left = Math.random()*100 + "vw";
-      b.style.setProperty("--drift", (Math.random()*120 - 60) + "px");
-      b.style.animationDuration = (7 + Math.random()*6).toFixed(2) + "s";
-      b.style.fontSize = (14 + Math.random()*18).toFixed(0) + "px";
-      document.body.appendChild(b);
-      setTimeout(()=> b.remove(), 14000);
-    }, 2500);
-  })();
+  // ===== فقاعات (معطلة لتخفيف الأداء) =====
+  // (function bubbles(){ ... })();
 
   // ===== Themes =====
   const THEMES = [
@@ -3536,30 +3918,30 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("resize", resize);
     resize();
 
-    const shapes = ["✨","💗","⭐️","🎀","🌸"];
-    // قللنا عدد الجسيمات من 18 إلى 10
-    const N = 10;
+    const shapes = ["✨","💗","🌸"];
+    const N = 5;
     const ps = Array.from({length:N}, ()=>({
       x: Math.random()*w,
       y: Math.random()*h,
-      r: (10 + Math.random()*18) * dpr,
-      s: (0.25 + Math.random()*0.7) * dpr,
-      a: 0.45 + Math.random()*0.35,
+      r: (12 + Math.random()*14) * dpr,
+      s: (0.6 + Math.random()*0.8) * dpr,
+      a: 0.35 + Math.random()*0.3,
       t: shapes[(Math.random()*shapes.length)|0],
-      drift: (Math.random()*0.6 - 0.3) * dpr
+      drift: (Math.random()*0.4 - 0.2) * dpr
     }));
 
-    // أزلنا تأثير تتبع الماوس لتخفيف الحسابات
-    function draw(){
+    let lastDraw = 0;
+    function draw(ts){
+      requestAnimationFrame(draw);
+      if(ts - lastDraw < 80) return; // ~12fps
+      lastDraw = ts;
       ctx.clearRect(0,0,w,h);
       for(const p of ps){
         p.y -= p.s;
         p.x += p.drift;
-
         if(p.y < -60*dpr){ p.y = h + 60*dpr; p.x = Math.random()*w; }
         if(p.x < -60*dpr) p.x = w + 60*dpr;
         if(p.x > w + 60*dpr) p.x = -60*dpr;
-
         ctx.globalAlpha = p.a;
         ctx.font = `${p.r}px system-ui, Arial`;
         ctx.textAlign = "center";
@@ -3567,9 +3949,8 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.fillText(p.t, p.x, p.y);
       }
       ctx.globalAlpha = 1;
-      requestAnimationFrame(draw);
     }
-    draw();
+    requestAnimationFrame(draw);
   })();
 
   // ===== لعبة اصطياد عمر وكنان =====
@@ -3942,107 +4323,238 @@ document.addEventListener("DOMContentLoaded", () => {
         const canvas = document.getElementById("shareCanvas");
         if(!canvas){ showToast("خطأ: ما لقيت الكانفاس"); return; }
 
-        const W = 900, H = 520;
-        canvas.width  = W * 2; // دقة عالية
-        canvas.height = H * 2;
-        canvas.style.width  = W + "px";
-        canvas.style.height = H + "px";
+        const W = 1080, H = 1500;
+        canvas.width  = W;
+        canvas.height = H;
+        canvas.style.width  = (W/2) + "px";
+        canvas.style.height = (H/2) + "px";
         const ctx = canvas.getContext("2d");
-        ctx.scale(2, 2); // للوضوح
+        if(!ctx){ showToast("خطأ بالرسم"); return; }
 
-        // ===== خلفية =====
-        const grad = ctx.createLinearGradient(0, 0, W, H);
-        grad.addColorStop(0,   "#ffb6d5");
-        grad.addColorStop(0.5, "#ffd6ea");
-        grad.addColorStop(1,   "#ffb6d5");
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, W, H);
+        const roundRect = (x,y,w,h,r)=>{
+          ctx.beginPath();
+          ctx.moveTo(x+r,y);
+          ctx.lineTo(x+w-r,y);
+          ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+          ctx.lineTo(x+w,y+h-r);
+          ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+          ctx.lineTo(x+r,y+h);
+          ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+          ctx.lineTo(x,y+r);
+          ctx.quadraticCurveTo(x,y,x+r,y);
+          ctx.closePath();
+        };
 
-        // دوائر خلفية
-        [[80,80,110,.18],[820,420,130,.15],[450,30,80,.12],[750,80,60,.10]].forEach(([x,y,r,a])=>{
+        const drawSparkle = (x,y,size,alpha=1)=>{
+          ctx.save();
+          ctx.translate(x,y);
+          ctx.globalAlpha = alpha;
+          ctx.strokeStyle = "rgba(255,255,255,.95)";
+          ctx.lineWidth = Math.max(2, size/8);
+          ctx.beginPath();
+          ctx.moveTo(-size,0); ctx.lineTo(size,0);
+          ctx.moveTo(0,-size); ctx.lineTo(0,size);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(-size*.55,-size*.55); ctx.lineTo(size*.55,size*.55);
+          ctx.moveTo(size*.55,-size*.55); ctx.lineTo(-size*.55,size*.55);
+          ctx.stroke();
+          ctx.restore();
+        };
+
+        const drawCake = (x,y,scale=1,withText=true)=>{
+          ctx.save();
+          ctx.translate(x,y);
+          ctx.scale(scale,scale);
+          ctx.shadowColor = "rgba(255,79,163,.22)";
+          ctx.shadowBlur = 28;
+          ctx.fillStyle = "rgba(255,255,255,.96)";
+          ctx.beginPath();
+          ctx.ellipse(0,86,66,16,0,0,Math.PI*2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
+
+          const cakeGrad = ctx.createLinearGradient(0,10,0,88);
+          cakeGrad.addColorStop(0,"#ffe9f3");
+          cakeGrad.addColorStop(1,"#ffc5dc");
+          ctx.fillStyle = cakeGrad;
+          roundRect(-58,18,116,68,26);
+          ctx.fill();
+
+          ctx.fillStyle = "#ff8abf";
+          ctx.beginPath();
+          ctx.moveTo(-58,22);
+          ctx.bezierCurveTo(-40,8,-12,10,0,18);
+          ctx.bezierCurveTo(14,8,40,12,58,24);
+          ctx.lineTo(58,44);
+          for(let i=-48;i<=42;i+=18){
+            ctx.arc(i,44,8,0,Math.PI,true);
+          }
+          ctx.lineTo(-58,22);
+          ctx.fill();
+
+          ctx.fillStyle = "#ff6fb5";
+          for(let i=-38;i<=40;i+=20){
+            ctx.beginPath();
+            ctx.arc(i,58,4,0,Math.PI*2);
+            ctx.fill();
+          }
+
+          ctx.fillStyle = "#f6a24d";
+          [[-18,-22],[14,-24]].forEach(([cx,cy])=>{
+            ctx.fillRect(cx,cy,6,24);
+            const flame = ctx.createRadialGradient(cx+3,cy-10,1,cx+3,cy-10,10);
+            flame.addColorStop(0,"#fff9bf");
+            flame.addColorStop(.45,"#ffd36a");
+            flame.addColorStop(1,"rgba(255,160,0,0)");
+            ctx.fillStyle = flame;
+            ctx.beginPath();
+            ctx.ellipse(cx+3,cy-10,7,11,0,0,Math.PI*2);
+            ctx.fill();
+          });
+
+          if(withText){
+            ctx.fillStyle = "#ff4fa3";
+            ctx.strokeStyle = "rgba(255,255,255,.98)";
+            ctx.lineWidth = 8;
+            ctx.font = "950 54px 'Segoe UI', Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.strokeText("١٨", 0, -4);
+            ctx.fillText("١٨", 0, -4);
+          }
+          ctx.restore();
+        };
+
+        const bg = ctx.createLinearGradient(0,0,W,H);
+        bg.addColorStop(0,"#f9b4d2");
+        bg.addColorStop(.38,"#ffd4e7");
+        bg.addColorStop(.72,"#f7c0db");
+        bg.addColorStop(1,"#efabd0");
+        ctx.fillStyle = bg;
+        ctx.fillRect(0,0,W,H);
+
+        [[160,160,140,.18],[960,280,160,.12],[860,1120,180,.12],[180,1190,200,.11],[560,90,120,.14]].forEach(([x,y,r,a])=>{
           ctx.beginPath();
           ctx.arc(x,y,r,0,Math.PI*2);
-          ctx.fillStyle=`rgba(255,255,255,${a})`;
+          ctx.fillStyle = `rgba(255,255,255,${a})`;
           ctx.fill();
         });
 
-        // ===== كارد أبيض =====
-        const cx=50,cy=50,cw=W-100,ch=H-100,cr=24;
-        ctx.beginPath();
-        ctx.moveTo(cx+cr,cy); ctx.lineTo(cx+cw-cr,cy);
-        ctx.quadraticCurveTo(cx+cw,cy,cx+cw,cy+cr);
-        ctx.lineTo(cx+cw,cy+ch-cr);
-        ctx.quadraticCurveTo(cx+cw,cy+ch,cx+cw-cr,cy+ch);
-        ctx.lineTo(cx+cr,cy+ch);
-        ctx.quadraticCurveTo(cx,cy+ch,cx,cy+ch-cr);
-        ctx.lineTo(cx,cy+cr);
-        ctx.quadraticCurveTo(cx,cy,cx+cr,cy);
-        ctx.closePath();
-        ctx.fillStyle="rgba(255,255,255,0.90)";
-        ctx.shadowColor="rgba(255,79,163,.25)";
-        ctx.shadowBlur=28;
+        for(let i=0;i<70;i++){
+          drawSparkle(Math.random()*W, Math.random()*H, 6 + Math.random()*12, .45 + Math.random()* .55);
+        }
+
+        const sideCakes = [
+          [92,110,.82],[940,118,.9],[125,340,.74],[930,510,.78],[124,770,.96],[928,820,.92],[135,1080,.82],[904,1150,.88],[520,118,.58],[722,1010,.72],[328,1002,.64],[260,560,.56]
+        ];
+        sideCakes.forEach(([x,y,s])=> drawCake(x,y,s,true));
+
+        const cardX = 110, cardY = 165, cardW = W-220, cardH = 1030;
+        ctx.save();
+        roundRect(cardX,cardY,cardW,cardH,38);
+        ctx.fillStyle = "rgba(255,248,252,.82)";
+        ctx.shadowColor = "rgba(255,79,163,.20)";
+        ctx.shadowBlur = 40;
         ctx.fill();
-        ctx.shadowBlur=0;
+        ctx.shadowBlur = 0;
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "rgba(255,255,255,.88)";
+        ctx.stroke();
+        ctx.restore();
 
-        // ===== النصوص =====
-        ctx.textAlign="center";
-        ctx.textBaseline="middle";
-        ctx.direction="rtl";
+        // top pills
+        const pill = (x,y,w,h,text)=>{
+          ctx.save();
+          roundRect(x,y,w,h,h/2);
+          ctx.fillStyle = "rgba(255,255,255,.92)";
+          ctx.shadowColor = "rgba(255,79,163,.12)";
+          ctx.shadowBlur = 18;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+          ctx.strokeStyle = "rgba(255,174,215,.85)";
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          ctx.fillStyle = "#cf5c96";
+          ctx.font = "900 24px 'Segoe UI', Arial";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(text, x+w/2, y+h/2+1);
+          ctx.restore();
+        };
+        pill(150,208,180,66,"👑 يوم مميز ♡");
+        pill(W-330,208,180,66,"📅 28 أبريل");
 
-        // عنوان رئيسي
-        ctx.font="bold 42px 'Segoe UI', system-ui, Arial";
-        ctx.fillStyle="#ff4fa3";
-        ctx.fillText("🎂 عيد ميلاد حلا 🎀", W/2, 145);
-
-        // نجمات
-        ctx.font="22px system-ui";
-        ctx.fillText("✨ ✨ ✨ ✨ ✨", W/2, 185);
-
-        // خط فاصل
-        const lg = ctx.createLinearGradient(cx+40,0,cx+cw-40,0);
-        lg.addColorStop(0,"transparent");
-        lg.addColorStop(0.5,"#ffd1e7");
-        lg.addColorStop(1,"transparent");
+        // center top emblem
+        ctx.save();
         ctx.beginPath();
-        ctx.moveTo(cx+40,210); ctx.lineTo(cx+cw-40,210);
-        ctx.strokeStyle=lg; ctx.lineWidth=1.5; ctx.stroke();
+        ctx.arc(W/2,290,62,0,Math.PI*2);
+        ctx.fillStyle = "#fffafc";
+        ctx.shadowColor = "rgba(255,79,163,.18)";
+        ctx.shadowBlur = 20;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = "#ffd0e6";
+        ctx.stroke();
+        ctx.font = "900 56px 'Segoe UI Emoji', 'Apple Color Emoji', Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("🎀", W/2, 294);
+        ctx.restore();
 
-        // العمر
-        // حساب دقيق — يحسب العمر الكامل بالميلادي مع مراعاة اليوم والشهر
-        const now2  = new Date();
-        const b2    = new Date("2008-04-28T00:00:00");
-        let yrs2    = now2.getFullYear() - b2.getFullYear();
-        const hadBday = (now2.getMonth() > b2.getMonth()) ||
-                        (now2.getMonth() === b2.getMonth() && now2.getDate() >= b2.getDate());
-        if(!hadBday) yrs2--;
+        ctx.direction = "rtl";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "#4b2235";
+        ctx.font = "900 44px 'Segoe UI', Arial";
+        ctx.fillText("💞 كل عامِ وانتِ فرحتي ودنيتي وعالمي 🫰🏻💞", W/2, 430);
 
-        ctx.font="bold 88px 'Segoe UI', system-ui, Arial";
-        ctx.fillStyle="#ff4fa3";
-        ctx.fillText(yrs2, W/2 - 30, 305);
+        ctx.fillStyle = "#c55f94";
+        ctx.font = "900 34px 'Segoe UI', Arial";
+        ctx.fillText("💖 اليوم يومك، والفرحة إلك", W/2, 505);
 
-        ctx.font="bold 40px system-ui";
-        ctx.fillStyle="#ff4fa3";
-        ctx.fillText("🎉", W/2 + 60, 300);
+        roundRect(180,570,W-360,190,28);
+        ctx.fillStyle = "rgba(255,242,248,.96)";
+        ctx.strokeStyle = "rgba(255,194,223,.95)";
+        ctx.lineWidth = 3;
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "#4b2235";
+        ctx.font = "900 26px 'Segoe UI', Arial";
+        ctx.fillText('"يا أجمل من في الدنيا، عسى سنينك الجاية كلها سعادة"', W/2, 655);
+        ctx.fillText('🎀 وإنجازات وتحقيق لأحلامك 🎀', W/2, 708);
 
-        ctx.font="bold 20px 'Segoe UI', system-ui, Arial";
-        ctx.fillStyle="#3b2b2f";
-        ctx.fillText("سنة من الجمال والتألق", W/2, 365);
-
-        // خط فاصل ثاني
+        // big central cake button look
+        ctx.save();
         ctx.beginPath();
-        ctx.moveTo(cx+40,390); ctx.lineTo(cx+cw-40,390);
-        ctx.strokeStyle=lg; ctx.lineWidth=1.5; ctx.stroke();
+        ctx.arc(W/2, 940, 128, 0, Math.PI*2);
+        ctx.fillStyle = "rgba(255,255,255,.70)";
+        ctx.shadowColor = "rgba(255,79,163,.26)";
+        ctx.shadowBlur = 32;
+        ctx.fill();
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = "rgba(255,255,255,.85)";
+        ctx.stroke();
+        ctx.restore();
+        drawCake(W/2, 935, 1.26, true);
 
-        // رسالة
-        ctx.font="18px 'Segoe UI', system-ui, Arial";
-        ctx.fillStyle="#888";
-        ctx.fillText("كل عام وانتِ قمري الذي أكتفي به 💞", W/2, 418);
 
-        // إيموجيات أسفل
-        ctx.font="26px system-ui";
-        ["💗","✨","🌸","💞","🎀","💖"].forEach((e,i)=>{
-          ctx.fillText(e, 105 + i*132, 460);
-        });
+        // bottom waves
+        for(let i=0;i<3;i++){
+          ctx.beginPath();
+          const base = 1280 + i*26;
+          ctx.moveTo(0, base);
+          for(let x=0;x<=W;x+=40){
+            const y = base + Math.sin((x/W)*Math.PI*2 + i*.6) * (12 + i*3);
+            ctx.lineTo(x,y);
+          }
+          ctx.lineTo(W,H);
+          ctx.lineTo(0,H);
+          ctx.closePath();
+          ctx.fillStyle = i===0 ? "rgba(255,255,255,.28)" : i===1 ? "rgba(255,255,255,.18)" : "rgba(255,255,255,.12)";
+          ctx.fill();
+        }
 
         // ===== تحميل =====
         try{
