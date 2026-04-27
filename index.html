@@ -3066,7 +3066,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 كل عام وانتي احلى صدفة صارت بحياتي واحلى نصيب بدعي ربي يكتبه لي للابد وكل عام وانتي حبيبتي ودلوعتي ولوليييي اللي ما بدي غيرها ابدااااا 🫂💞
 
-
 بتمنى كل سنيني معككك وتكوني زوجتي ان شاء الله ونحتفل مع بعض دايما وابداااا ولا يفرقنا شيييي 🫂
 `;
 
@@ -3532,7 +3531,7 @@ document.addEventListener("DOMContentLoaded", () => {
       qSmall.textContent = "اضغطيه إذا تقدري 😼 (الزر بيهرب!)";
       answerArea.innerHTML = `
         <div class="moveArea" id="moveArea">
-          <button class="btn primary movingBtn" id="escapeBtn">${s.btn.text}</button>
+          <button class="btn primary movingBtn" id="escapeBtn" type="button">${s.btn.text}</button>
         </div>
       `;
       escapeTries = 0;
@@ -3541,58 +3540,75 @@ document.addEventListener("DOMContentLoaded", () => {
       const escapeBtn = $("escapeBtn");
       if(!moveArea || !escapeBtn) return;
 
-      // ضع الزر في وسط moveArea في البداية
+      // البداية بالنص
       escapeBtn.style.transition = "none";
       escapeBtn.style.left = "50%";
       escapeBtn.style.transform = "translateX(-50%)";
       escapeBtn.style.top = "10px";
 
+      let canGoNext = false;
+      let lastEscapeTime = 0;
+
       function randomMove(){
-        const area = moveArea.getBoundingClientRect();
+        const areaW = moveArea.clientWidth || 320;
+        const areaH = moveArea.clientHeight || 80;
         const btnW = escapeBtn.offsetWidth || 180;
-        const btnH = escapeBtn.offsetHeight || 46;
-        const maxX = Math.max(10, area.width - btnW - 10);
-        const maxY = Math.max(0, area.height - btnH);
+        const btnH = escapeBtn.offsetHeight || 50;
 
-        const x = Math.floor(10 + Math.random() * (maxX - 10));
-        const y = Math.floor(Math.random() * maxY);
+        const maxX = Math.max(10, areaW - btnW - 10);
+        const maxY = Math.max(0, areaH - btnH);
 
-        // شغّل الـ transition قبل تغيير الموضع
-        escapeBtn.style.transition = "left 0.38s cubic-bezier(.2,.9,.2,1), top 0.38s cubic-bezier(.2,.9,.2,1), transform 0.38s cubic-bezier(.2,.9,.2,1)";
+        const x = Math.floor(10 + Math.random() * Math.max(1, maxX - 10));
+        const y = Math.floor(Math.random() * Math.max(1, maxY));
+
+        // cubic-bezier مضبوط، القديم كان فيه رقم غلط
+        escapeBtn.style.transition = "left .35s cubic-bezier(.2,.9,.2,1), top .35s cubic-bezier(.2,.9,.2,1), transform .12s ease";
         escapeBtn.style.transform = "none";
         escapeBtn.style.left = x + "px";
         escapeBtn.style.top  = y + "px";
       }
 
-      function doEscape(){
+      function goNext(e){
+        e?.preventDefault?.();
+        e?.stopPropagation?.();
+        burst();
+        stepIndex++;
+        renderStep();
+      }
+
+      function doEscape(e){
+        e?.preventDefault?.();
+        e?.stopPropagation?.();
+
+        // منع التكرار السريع لأن pointerdown + click ممكن يشتغلوا ورا بعض
+        const now = Date.now();
+        if(now - lastEscapeTime < 180) return;
+        lastEscapeTime = now;
+
+        if(canGoNext){
+          goNext(e);
+          return;
+        }
+
         escapeTries++;
         beep("escape");
         burst();
-
         randomMove();
 
         if(escapeTries >= 5){
+          canGoNext = true;
           qSmall.textContent = "خلاص خلاص… استسلمت 🫢 اضغطيه مرّة أخيرة";
           escapeBtn.textContent = "طيب… كملي 😼";
-          // نوقف كل المستمعين ونكمل فوراً على أول ضغطة
-          escapeBtn.removeEventListener("mouseenter", doEscape);
-          escapeBtn.ontouchstart = null;
-          escapeBtn.onclick = null;
-          // نضيف مستمع نظيف بدون preventDefault يمنع التشغيل
-          const goNext = (e)=>{
-            e.stopImmediatePropagation();
-            burst();
-            stepIndex++;
-            renderStep();
-          };
-          escapeBtn.addEventListener("click", goNext, {once:true});
-          escapeBtn.addEventListener("touchend", goNext, {once:true, passive:true});
+          escapeBtn.style.left = "50%";
+          escapeBtn.style.top = "10px";
+          escapeBtn.style.transform = "translateX(-50%)";
         }
       }
 
-      escapeBtn.addEventListener("mouseenter", doEscape);
-      escapeBtn.addEventListener("touchstart", (e)=>{ e.preventDefault(); doEscape(); }, {passive:false});
-      // click مو للهروب — بس للاستسلام (يتحكم فيه onclick فوق)
+      // يشتغل على اللابتوب والجوال
+      escapeBtn.addEventListener("pointerenter", doEscape);
+      escapeBtn.addEventListener("pointerdown", doEscape);
+      escapeBtn.addEventListener("click", doEscape);
 
       setTimeout(randomMove, 200);
       return;
