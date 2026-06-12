@@ -2705,6 +2705,145 @@ body.question-focus .quizStage{
 
 
 
+  /* ===== الرسالة السرية ===== */
+  .secretSection{
+    margin-top: 16px;
+    background: linear-gradient(160deg, rgba(24,14,26,.97), rgba(43,22,40,.97));
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 26px;
+    padding: 18px 16px 20px;
+    box-shadow: 0 24px 44px rgba(0,0,0,.22), inset 0 0 0 1px rgba(255,255,255,.04);
+    display: none;
+    text-align: center;
+  }
+  .secretTitle{
+    font-size: 14px; font-weight: 950;
+    color: #fff4fa; text-align: center;
+    margin-bottom: 14px;
+    letter-spacing: .02em;
+  }
+  .secretStep{
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+  }
+  .secretStep.active{ display: flex; }
+
+  .secretQuestionCard{
+    width: min(100%, 360px);
+    margin: 0 auto;
+    background: linear-gradient(135deg, #ff5db4, #e2449f);
+    border-radius: 20px;
+    padding: 14px 16px;
+    color: #fff;
+    text-align: center;
+    font-size: clamp(15px, 2.2vw, 17px);
+    font-weight: 950;
+    line-height: 1.7;
+    box-shadow: 0 16px 32px rgba(255,79,163,.24);
+    animation: msgPop .4s cubic-bezier(.2,.9,.2,1);
+  }
+  .secretDateRow{
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: min(100%, 360px);
+    margin: 0 auto;
+  }
+  .secretSelect{
+    flex: 1;
+    min-width: 74px;
+    padding: 11px 10px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.10);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 900;
+    text-align: center;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: border-color .2s ease, background .2s ease;
+  }
+  .secretSelect:focus{
+    border-color: rgba(255,127,195,.7);
+    background: rgba(255,255,255,.16);
+  }
+  .secretSelect option{ background: #2a1827; color: #fff; }
+
+  .secretConfirmBtn{
+    width: min(100%, 300px);
+    padding: 13px 16px;
+    border: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #ff4fa3, #ff7fc3);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 950;
+    cursor: pointer;
+    box-shadow: 0 14px 28px rgba(255,79,163,.28);
+    transition: transform .12s ease;
+  }
+  .secretConfirmBtn:active{ transform: scale(.97); }
+
+  .secretErrorMsg{
+    font-size: 14px;
+    font-weight: 900;
+    color: #ffb3d9;
+    text-align: center;
+    min-height: 20px;
+    animation: msgPop .3s ease;
+    width: min(100%, 360px);
+    margin: 0 auto;
+  }
+
+  .secretSuccessBanner{
+    width: min(100%, 360px);
+    margin: 0 auto;
+    background: linear-gradient(135deg, rgba(255,255,255,.16), rgba(255,255,255,.08));
+    border: 1px solid rgba(255,255,255,.20);
+    border-radius: 20px;
+    padding: 14px 16px;
+    text-align: center;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 950;
+    line-height: 1.7;
+    box-shadow: 0 12px 28px rgba(0,0,0,.18);
+    animation: msgPop .45s cubic-bezier(.2,.9,.2,1);
+  }
+
+  .secretRevealBox{
+    display: none;
+    width: 100%;
+    max-width: 360px;
+    margin: 12px auto 0;
+    background: linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+    border: 1px solid rgba(255,127,195,.30);
+    border-radius: 20px;
+    padding: 18px 16px;
+    text-align: center;
+    color: #fde8f3;
+    font-size: clamp(14px, 2vw, 16px);
+    font-weight: 800;
+    line-height: 2.1;
+    box-shadow: 0 12px 28px rgba(0,0,0,.22), inset 0 0 0 1px rgba(255,255,255,.06);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .secretRevealBox.typed{
+    border-bottom: 2px solid rgba(255,127,195,.6);
+    animation: caret .9s steps(1) infinite;
+  }
+  .secretRevealBox.show{ display: block; }
+
   /* ===== FINAL IMAGE CENTER FIX ===== */
   .fadeSlider{
     width: min(100%, 320px) !important;
@@ -2768,6 +2907,7 @@ body.question-focus .quizStage{
     <div class="badges preQuizHidden">
       <div class="badge">🎀 مفاجأة لحلا</div>
       <div class="badge" id="dateBadge">📅 اليوم</div>
+      <div class="badge" id="visitBadge">👀 ...</div>
     </div>
 
 
@@ -2819,6 +2959,38 @@ body.question-focus .quizStage{
     </div>
 
 
+
+    <!-- ===== الرسالة السرية ===== -->
+    <div class="secretSection" id="secretSection" style="display:none">
+      <div class="secretTitle">🔐 رسالة سرية — إذا كنتي تعرفي 👀</div>
+
+      <!-- المرحلة الأولى: تاريخ الميلاد -->
+      <div class="secretStep active" id="secretStep1">
+        <div class="secretQuestionCard">شو افضل تاريخ؟ 🤔</div>
+        <div class="secretDateRow">
+          <select class="secretSelect" id="ss1-year"><option value="">السنة</option></select>
+          <select class="secretSelect" id="ss1-month"><option value="">الشهر</option></select>
+          <select class="secretSelect" id="ss1-day"><option value="">اليوم</option></select>
+        </div>
+        <div class="secretErrorMsg" id="ss1-error"></div>
+        <button class="secretConfirmBtn" id="ss1-confirm">تأكيدي ✨</button>
+      </div>
+
+      <!-- المرحلة الثانية: تاريخ المعرفة -->
+      <div class="secretStep" id="secretStep2">
+        <div class="secretQuestionCard">أي تاريخ عرفتك فيه 🤨</div>
+        <div class="secretDateRow">
+          <select class="secretSelect" id="ss2-year"><option value="">السنة</option></select>
+          <select class="secretSelect" id="ss2-month"><option value="">الشهر</option></select>
+          <select class="secretSelect" id="ss2-day"><option value="">اليوم</option></select>
+        </div>
+        <div class="secretErrorMsg" id="ss2-error"></div>
+        <button class="secretConfirmBtn" id="ss2-confirm">تأكيدي ✨</button>
+      </div>
+
+      <!-- الرسالة السرية المكشوفة -->
+      <div class="secretRevealBox" id="secretRevealBox"></div>
+    </div>
 
     <div class="gift" id="giftBox">
       <div class="ribbon">💖 تهنئة</div>
@@ -3038,6 +3210,47 @@ document.addEventListener("DOMContentLoaded", () => {
     clearTimeout(showToast._t);
     showToast._t = setTimeout(()=>toast.style.display="none", dur);
   }
+
+  // ===== اهتزاز الجوال =====
+  function vibrate(type = "correct"){
+    if(!navigator.vibrate) return;
+    if(type === "correct")  navigator.vibrate([40, 30, 40]);        // نبضتين خفيفتين
+    else if(type === "wrong") navigator.vibrate([80, 40, 80, 40, 80]); // ثلاث نبضات متقطعة
+    else if(type === "party") navigator.vibrate([30,20,30,20,60,20,30]); // احتفالية
+  }
+
+  // ===== عداد الزيارات =====
+  (function initVisitCounter(){
+    const badge = document.getElementById("visitBadge");
+    if(!badge) return;
+
+    let count = 0;
+    try{ count = parseInt(localStorage.getItem("hala_visits") || "0"); } catch(e){}
+    count++;
+    try{ localStorage.setItem("hala_visits", count); } catch(e){}
+
+    const msgs = [
+      null,
+      "أول مرة تفتحي الموقع 🎉",
+      "هذي المرة الثانية 👀",
+      "ثلاث مرات؟ يبدو عجبك 🥹",
+      "المرة الرابعة… واضح إنك تحبين الموقع 💗",
+      "خمس مرات! وين رح تروحين 🥸",
+    ];
+
+    const label = count <= 5
+      ? msgs[count]
+      : `فتحتي الموقع ${count} مرة 🫰🏻`;
+
+    badge.textContent = "👀 " + label;
+
+    // أنيميشن بسيط عند التحديث
+    badge.style.transition = "transform .3s cubic-bezier(.2,.9,.2,1)";
+    setTimeout(()=>{
+      badge.style.transform = "scale(1.12)";
+      setTimeout(()=> badge.style.transform = "scale(1)", 300);
+    }, 600);
+  })();
 
   // ===== التاريخ =====
   const dateBadge = $("dateBadge");
@@ -3500,10 +3713,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const isOtherText = !isAgeWord && /[a-zA-Zا-ي]/.test(v);
         if(v === "18"){
           burst();
+          vibrate("correct");
           showAgePopup("success", "🎉", "اووووووه القمر عرف حاله شطوووووووورة 🫰🏻💞", 2200);
           setTimeout(()=>{ stepIndex++; renderStep(); }, 2200);
         }else if(isAgeWord){
           beep("escape");
+          vibrate("wrong");
           showAgePopup("error", "😼", "هو منطقيا صح بس لازم عمرك الرقمي 🥸", 2500);
           if(ageInput){ ageInput.value = ""; setTimeout(()=> ageInput.focus(), 300); }
         }else if(isOtherText){
@@ -3516,6 +3731,7 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }else{
           beep("escape");
+          vibrate("wrong");
           showAgePopup("error", "😼", "خطأ! احد بينسى عمره؟ 😼", 2500);
           if(ageInput){ ageInput.value = ""; setTimeout(()=> ageInput.focus(), 300); }
         }
@@ -3626,14 +3842,15 @@ document.addEventListener("DOMContentLoaded", () => {
       if(heartBtn){
         const openEnvelopeFlow = ()=>{
           const quizBox = $("quizBox");
-          const giftBox = $("giftBox");
-          const giftText = $("giftText");
           setQuestionFocus(false);
           if(quizBox) quizBox.style.display = "none";
-          showToast("وصلتي للتهنئة 💖");
-          if(giftBox){ giftBox.style.display = "block"; giftBox.classList.add("fromEnvelope"); }
-          if(giftText) typeWriter(giftText, message, 3);
-          setTimeout(()=> giftBox?.scrollIntoView({behavior:"smooth", block:"start"}), 100);
+          // أظهر الرسالة السرية أولاً — هي اللي ستفتح التهنئة
+          const sec = document.getElementById("secretSection");
+          if(sec){
+            sec.style.display = "block";
+            showToast("في رسالة سرية إلك 🔐✨", 2000);
+            setTimeout(()=> sec.scrollIntoView({behavior:"smooth", block:"start"}), 150);
+          }
         };
 
         const openCakeStage = ()=>{
@@ -3723,6 +3940,7 @@ document.addEventListener("DOMContentLoaded", () => {
         heartBtn.addEventListener("click", ()=>{
           beep("heart");
           playPartyPop();
+          vibrate("party");
           heartBtn.classList.add("pressed");
           showToast("لحظة... 💗");
           burst();
@@ -3735,7 +3953,143 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderStep();
 
-  // ===== Slider =====
+  // ===== الرسالة السرية =====
+  (function initSecret(){
+    const secretSection  = document.getElementById("secretSection");
+    const secretReveal   = document.getElementById("secretRevealBox");
+    const step1          = document.getElementById("secretStep1");
+    const step2          = document.getElementById("secretStep2");
+    const err1           = document.getElementById("ss1-error");
+    const err2           = document.getElementById("ss2-error");
+
+    if(!secretSection) return;
+
+    // الرسالة السرية اللي تظهر لما تعرف التواريخ
+    const secretMsg = `يا حلا لو عرفتي هالتواريخ بتعرفي قديش أنتي مهمة كتييير عندي 💗\n\nتاريخ ميلادك كان أحلى يوم وُجدتي فيه بالدنيا…\nوتاريخ ما عرفتك كان أحلى يوم وُجدتي بحياتي 🌸\n\nبحبك كتير يا دمشقيتيييي 🥸💞`;
+
+    // === بناء الـ selects ===
+    function fillYear(sel, minY, maxY){
+      for(let y = maxY; y >= minY; y--){
+        const o = document.createElement("option");
+        o.value = y; o.textContent = y;
+        sel.appendChild(o);
+      }
+    }
+    function fillMonth(sel){
+      const months = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+      months.forEach((m, i)=>{
+        const o = document.createElement("option");
+        o.value = i + 1; o.textContent = m;
+        sel.appendChild(o);
+      });
+    }
+    function fillDay(sel){
+      for(let d = 1; d <= 31; d++){
+        const o = document.createElement("option");
+        o.value = d; o.textContent = d;
+        sel.appendChild(o);
+      }
+    }
+
+    // المرحلة الأولى
+    fillYear(document.getElementById("ss1-year"), 1995, 2030);
+    fillMonth(document.getElementById("ss1-month"));
+    fillDay(document.getElementById("ss1-day"));
+
+    // المرحلة الثانية
+    fillYear(document.getElementById("ss2-year"), 2000, 2030);
+    fillMonth(document.getElementById("ss2-month"));
+    fillDay(document.getElementById("ss2-day"));
+
+    // === تأكيد المرحلة الأولى ===
+    document.getElementById("ss1-confirm").addEventListener("click", ()=>{
+      const y = document.getElementById("ss1-year").value;
+      const m = document.getElementById("ss1-month").value;
+      const d = document.getElementById("ss1-day").value;
+
+      if(!y || !m || !d){ err1.textContent = "اختاري التاريخ كامل 🙏"; return; }
+
+      const correct = (+y === 2008 && +m === 4 && +d === 28);
+      if(correct){
+        err1.textContent = "";
+        beep("heart");
+        vibrate("correct");
+        burst();
+        // انتقل للمرحلة الثانية
+        step1.classList.remove("active");
+        step2.classList.add("active");
+        step2.scrollIntoView({behavior:"smooth", block:"center"});
+      } else {
+        beep("escape");
+        vibrate("wrong");
+        err1.textContent = "اهمممم تاريخخخ كيف تنسيييه!! 😤";
+        // رج الكارت
+        const card = document.querySelector("#secretStep1 .secretQuestionCard");
+        if(card){ card.style.animation = "none"; void card.offsetWidth; card.style.animation = ""; }
+        setTimeout(()=> err1.textContent = "", 2800);
+      }
+    });
+
+    // === تأكيد المرحلة الثانية ===
+    document.getElementById("ss2-confirm").addEventListener("click", ()=>{
+      const y = document.getElementById("ss2-year").value;
+      const m = document.getElementById("ss2-month").value;
+      const d = document.getElementById("ss2-day").value;
+
+      if(!y || !m || !d){ err2.textContent = "اختاري التاريخ كامل 🙏"; return; }
+
+      const correct = (+y === 2024 && +m === 12 && +d === 5);
+      if(correct){
+        err2.textContent = "";
+        beep("heart");
+        playPartyPop();
+        vibrate("party");
+        burst();
+        heartRain();
+        // أظهر رسالة النجاح ثم اكشف الرسالة
+        step2.innerHTML = `<div class="secretSuccessBanner">شطورتييييييي عرفتيييي التواريييخ 🥳🥳</div>`;
+        step2.classList.add("active");
+        setTimeout(()=>{
+          secretReveal.classList.add("show");
+          secretReveal.scrollIntoView({behavior:"smooth", block:"start"});
+          // typing effect
+          secretReveal.classList.add("typed");
+          secretReveal.textContent = "";
+          let i = 0;
+          const iv = setInterval(()=>{
+            secretReveal.textContent += secretMsg[i] ?? "";
+            i++;
+            if(i > secretMsg.length){
+              clearInterval(iv);
+              setTimeout(()=> secretReveal.classList.remove("typed"), 600);
+              // بعد ما تخلص الرسالة السرية — افتح التهنئة الكاملة تلقائياً
+              setTimeout(()=>{
+                const giftBox = document.getElementById("giftBox");
+                const giftText = document.getElementById("giftText");
+                if(giftBox){
+                  giftBox.style.display = "block";
+                  giftBox.classList.add("fromEnvelope");
+                  if(giftText) typeWriter(giftText, message, 3);
+                  showToast("وصلتي للتهنئة 💖", 2000);
+                  setTimeout(()=> giftBox.scrollIntoView({behavior:"smooth", block:"start"}), 200);
+                }
+              }, 2800);
+            }
+          }, 14);
+        }, 1000);
+      } else {
+        beep("escape");
+        vibrate("wrong");
+        err2.textContent = "كيف تنسي التاريخ اللي عرفتك فيه 😞";
+        const card = document.querySelector("#secretStep2 .secretQuestionCard");
+        if(card){ card.style.animation = "none"; void card.offsetWidth; card.style.animation = ""; }
+        setTimeout(()=> err2.textContent = "", 2800);
+      }
+    });
+
+  })();
+
+
   const slider = $("fadeSlider");
   if(slider){
     const slides = Array.from(slider.querySelectorAll(".fadeSlide"));
