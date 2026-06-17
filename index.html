@@ -2880,6 +2880,264 @@ body.question-focus .quizStage{
     object-position: center center !important;
     display: block;
   }
+/* ===== منطقة المهندسة (Engineer Mode) ===== */
+  .engineerSection{
+    margin-top: 16px;
+    background: linear-gradient(160deg, rgba(24,14,26,.98), rgba(43,22,40,.98));
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 28px;
+    padding: 18px 16px;
+    box-shadow: 0 24px 44px rgba(0,0,0,.22), 0 0 0 1px rgba(255,255,255,.04) inset;
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+  }
+  .engineerSection::before{
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 18% 16%, rgba(255,255,255,.07), transparent 22%),
+                radial-gradient(circle at 84% 12%, rgba(255,79,163,.14), transparent 24%);
+    pointer-events: none;
+  }
+  .engineerTitle{
+    font-size: 16px; font-weight: 950;
+    color: #fff4fa; text-align: center;
+    margin-bottom: 14px;
+    position: relative; z-index: 1;
+    letter-spacing: .5px;
+  }
+  .engCard{
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 18px;
+    padding: 14px;
+    margin-bottom: 12px;
+    position: relative; z-index: 1;
+    backdrop-filter: blur(6px);
+  }
+  .engCard:last-child{ margin-bottom: 0; }
+  .engCard h3{
+    font-size: 14px; font-weight: 950;
+    color: #ffd9ec; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  /* عداد المعرفة */
+  .knowCounterBox{
+    text-align: center;
+    font-size: 14px; font-weight: 900;
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 14px;
+    padding: 12px;
+    box-shadow: 0 10px 22px rgba(255,79,163,.25);
+    direction: rtl;
+  }
+  .knowCounterSub{
+    font-size: 11px; opacity: .85; margin-top: 4px; font-weight: 800;
+  }
+
+  /* بطاقة المهندسة */
+  .engineerCardRow{
+    display: flex; gap: 14px; align-items: center; flex-wrap: wrap;
+    justify-content: center;
+  }
+  .engineerCardImg img{
+    width: 110px; height: 110px;
+    object-fit: cover;
+    border-radius: 18px !important;
+    border: 2px solid rgba(255,255,255,.25);
+    box-shadow: 0 10px 24px rgba(0,0,0,.35);
+    display: block;
+  }
+  .engineerStats{
+    font-size: 13px; font-weight: 900;
+    line-height: 1.95;
+    color: #ffeaf5;
+    flex: 1; min-width: 150px;
+  }
+  .engineerStats b{ color: #ff9bcb; }
+
+  /* Project Progress */
+  .progressList{
+    list-style: none;
+    display: flex; flex-direction: column; gap: 8px;
+    margin: 0; padding: 0;
+  }
+  .progressList li{
+    background: rgba(255,255,255,.07);
+    border-radius: 12px;
+    padding: 9px 12px;
+    font-size: 13px; font-weight: 900;
+    color: #fff;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  /* System Analysis */
+  .analysisBox{
+    background: #0e0712;
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-family: "Courier New", monospace;
+    font-size: 12px;
+    line-height: 2;
+    color: #9cffb0;
+    direction: ltr;
+    text-align: left;
+    overflow-x: auto;
+  }
+  .analysisBox .lbl{ color: #ff9bcb; }
+  .analysisBox .ttl{ color: #ffd166; font-weight: 900; }
+
+  /* Blueprint Map */
+  .blueprintFlow{
+    text-align: center;
+    font-size: 13px; font-weight: 950;
+    color: #ffeaf5;
+    background: rgba(255,255,255,.06);
+    border-radius: 12px;
+    padding: 14px 8px;
+    letter-spacing: .5px;
+    direction: rtl;
+  }
+
+  /* Vault */
+  .vaultRow{
+    display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+  }
+  .vaultInput{
+    flex: 1; min-width: 140px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.10);
+    color: #fff;
+    font-weight: 900; font-size: 13px;
+    text-align: center;
+  }
+  .vaultInput::placeholder{ color: rgba(255,255,255,.55); }
+  .vaultBtn{
+    padding: 10px 22px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-weight: 950; font-size: 13px;
+    cursor: pointer;
+  }
+  .vaultMsg{
+    margin-top: 8px; text-align: center;
+    font-size: 13px; font-weight: 950;
+    min-height: 18px;
+    color: #9cffb0;
+  }
+  .vaultReveal{
+    display: none;
+    margin-top: 10px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-size: 13px; font-weight: 900;
+    line-height: 1.9;
+    color: #ffe8f4;
+    text-align: center;
+    white-space: pre-wrap;
+  }
+  .vaultReveal.show{ display: block; }
+
+  /* ختم Engineer Approved */
+  .approvedWrap{
+    text-align: center;
+  }
+  .approvedStamp{
+    display: inline-block;
+    border: 3px solid #66e3a9;
+    color: #66e3a9;
+    border-radius: 14px;
+    padding: 10px 22px;
+    font-size: 14px; font-weight: 950;
+    letter-spacing: 1px;
+    text-align: center;
+    transform: rotate(-4deg);
+    box-shadow: 0 0 0 3px rgba(102,227,169,.12);
+  }
+
+  /* Project Progress — شريط الإنجاز */
+  .progressBarWrap{
+    width: 100%; height: 10px;
+    background: rgba(255,255,255,.10);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  .progressBarFill{
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 999px;
+    transition: width 1.4s cubic-bezier(.2,.9,.2,1);
+  }
+  .progressPercent{
+    text-align: center;
+    font-size: 12px; font-weight: 900;
+    color: #ffd9ec;
+    margin-bottom: 10px;
+  }
+  .progressPercent b{ color: #fff; font-size: 13px; }
+  .nextPhaseHint{
+    margin-top: 8px;
+    background: rgba(255,255,255,.07);
+    border-radius: 10px;
+    padding: 9px 10px;
+    font-size: 12px; font-weight: 900;
+    color: #9cffb0;
+    text-align: center;
+    line-height: 1.8;
+  }
+
+  /* System Analysis — أنيميشن الفحص */
+  @keyframes scanPulse{ 0%,100%{opacity:1;} 50%{opacity:.35;} }
+  #scanStatus{ color:#ffd166; animation: scanPulse 1s ease-in-out infinite; }
+  .analysisBox .ok{ color:#9cffb0; font-weight: 900; }
+
+  /* Blueprint Map — محطات قابلة للضغط */
+  .bpNode{
+    display: inline-block;
+    cursor: pointer;
+    padding: 3px 8px;
+    border-radius: 8px;
+    font-weight: 950;
+    transition: background .2s, color .2s, transform .15s;
+  }
+  .bpNode:hover, .bpNode.active{
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    transform: scale(1.06);
+  }
+  .bpDetail{
+    margin-top: 10px;
+    background: rgba(255,255,255,.07);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 12.5px; font-weight: 900;
+    color: #ffeaf5;
+    text-align: center;
+    line-height: 1.85;
+    min-height: 40px;
+    direction: rtl;
+  }
+
+
+  /* إخفاء العناصر أثناء الأسئلة */
+  .postQuizShow{ display: none !important; }
+  body.quiz-done .postQuizShow{ display: block !important; }
+  body.quiz-done .gameSection.postQuizShow{ display: block !important; }
+  body.quiz-done .shareBtn.postQuizShow{ display: block !important; }
+
+  /* اللعبة تختفي بعد ما تبدأ الأسئلة وما ترجع */
+  body.quiz-started .postQuizHide{ display:none !important; }
 </style>
 </head>
 
@@ -2961,7 +3219,7 @@ body.question-focus .quizStage{
 
 
     <!-- ===== الرسالة السرية ===== -->
-    <div class="secretSection" id="secretSection" style="display:none">
+    <div class="secretSection" id="secretSection">
       <div class="secretTitle">🔐 رسالة سرية — إذا كنتي تعرفي 👀</div>
 
       <!-- المرحلة الأولى: تاريخ الميلاد -->
@@ -2978,7 +3236,7 @@ body.question-focus .quizStage{
 
       <!-- المرحلة الثانية: تاريخ المعرفة -->
       <div class="secretStep" id="secretStep2">
-        <div class="secretQuestionCard">أي تاريخ عرفتك فيه 🤨</div>
+        <div class="secretQuestionCard">شو تاني افضل تاريخ 🥸</div>
         <div class="secretDateRow">
           <select class="secretSelect" id="ss2-year"><option value="">السنة</option></select>
           <select class="secretSelect" id="ss2-month"><option value="">الشهر</option></select>
@@ -3101,7 +3359,7 @@ body.question-focus .quizStage{
       </div>
     </div>
 
-    <div class="gameSection" id="gameSection">
+    <div class="gameSection preQuizHidden postQuizHide" id="gameSection">
       <div class="gameTitle">🎯 اصطادي عمر وكنان!</div>
       <div class="gameStats">
         <span>⏱️ الوقت: <b id="gameTime">30</b>s</span>
@@ -3148,9 +3406,91 @@ body.question-focus .quizStage{
     </div>
 
     <!-- زر توليد الصورة -->
-    <button class="shareBtn" id="shareBtn">📸 ولّدي صورة كيكة 18 وشاركيها</button>
+    <button class="shareBtn preQuizHidden" id="shareBtn">📸 ولّدي صورة كيكة 18 وشاركيها</button>
     <canvas id="shareCanvas"></canvas>
 
+    <!-- ===== Engineer Mode — وضع المهندسة حلا ===== -->
+    <div class="engineerSection preQuizHidden postQuizHide" id="engineerSection">
+      <div class="engineerTitle">🎀 ملف دمشقيتي — لولي</div>
+
+      <!-- عداد المعرفة -->
+      <div class="engCard">
+        <h3>⏳ عداد المعرفة</h3>
+        <div class="knowCounterBox">
+          <div id="knowCounter">...</div>
+          <div class="knowCounterSub">⏳ كم صار عندي دمشقيتي من 5/12/2024</div>
+        </div>
+      </div>
+
+      <!-- بطاقة المهندسة بالصورة -->
+      <div class="engCard">
+        <h3>🎀 بطاقة لولي</h3>
+        <div class="engineerCardRow">
+          <div class="engineerCardImg"><img src="halakid.jpg" style="width:180px;border-radius:20px;"></div>
+          <div class="engineerStats">
+            <div>الاسم: <b>لولي 🎀</b></div>
+            <div>من: <b>دمشق 🌹</b></div>
+            <div>تحب: <b>Hello Kitty 🎀</b></div>
+            <div>الجمال: <b>∞</b></div>
+            <div>التأثير عليّ: <b>∞</b></div>
+            <div>حبي الك: <b>∞</b></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Progress -->
+      <div class="engCard">
+        <h3>🌹 مشوارنا مع بعض</h3>
+        <div class="progressBarWrap"><div class="progressBarFill" id="progressBarFill"></div></div>
+        <div class="progressPercent">نسبة الإنجاز: <b id="progressPercentVal">75%</b></div>
+        <ul class="progressList">
+          <li><span>أول ما عرفتك 🌹</span><span>✅</span></li>
+          <li><span>صرت جزء من يومي 💗</span><span>✅</span></li>
+          <li><span>نبني ذكريات أحلى 🎀</span><span>⏳</span></li>
+          <li id="nextPhaseItem"><span>الفصل القادم معاكِ</span><span id="nextPhaseIcon">🔒</span></li>
+        </ul>
+        <div class="nextPhaseHint" id="nextPhaseHint" style="display:none;"></div>
+      </div>
+
+      <!-- System Analysis -->
+      <div class="engCard">
+        <h3>🔍 تحليل لولي</h3>
+        <pre class="analysisBox" id="analysisBox"><span class="ttl">[ SYSTEM ANALYSIS ]</span>
+<span id="scanStatus">⏳ جارِ تحليل البيانات...</span></pre>
+      </div>
+
+      <!-- Blueprint Map -->
+      <div class="engCard">
+        <h3>🗺️ خريطة قصتنا</h3>
+        <div class="blueprintFlow" id="blueprintFlow"><span class="bpNode" data-key="start">بداية</span> ⟵ <span class="bpNode" data-key="know">معرفة</span> ⟵ <span class="bpNode" data-key="moments">مواقف</span> ⟵ <span class="bpNode" data-key="memories">ذكريات</span> ⟵ <span class="bpNode" data-key="future">مستقبل</span></div>
+        <div class="bpDetail" id="bpDetail">👆 اضغطي على أي محطة لتعرفي تفاصيلها</div>
+      </div>
+
+      <!-- Vault -->
+      <div class="engCard">
+        <h3>🎀 الخزنة السرية</h3>
+        <div class="vaultRow">
+          <input class="vaultInput" id="vaultPass" type="text" placeholder="🎀 كلمة السر...">
+          <button class="vaultBtn" id="vaultBtn">فتح</button>
+        </div>
+        <div class="vaultMsg" id="vaultMsg"></div>
+        <div class="vaultReveal" id="vaultReveal"></div>
+      </div>
+
+      <!-- ختم Engineer Approved -->
+      <div class="engCard approvedWrap">
+        <div class="approvedStamp">🎀 Approved by عموري</div>
+      </div>
+    </div>
+
+    <!-- القلب يطلع بعد إدخال التواريخ الصح -->
+    <div id="secretHeartWrap" style="display:none; justify-content:center; margin-top:14px; flex-direction:column; align-items:center; gap:10px; padding:14px;">
+      <div style="font-size:13px; font-weight:900; color:var(--accent); text-align:center;">اضغطي القلب عشان تكملي 💗</div>
+      <div class="heartBtn" id="secretHeartBtn" role="button" aria-label="زر قلب" style="cursor:pointer;">
+        <span class="heartIcon">💗</span>
+        <span>اضغطي هنا</span>
+      </div>
+    </div>
   </div>
 
   <!-- زر الهوم سكرين -->
@@ -3584,7 +3924,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     { q: "🔥 بتحبي عمر ولا لا؟", btn: { type:"normal", text:"هاااااااااا؟" } },
     { q: "😾 شووووو هاااااا بتحبي عمر ولا لا؟", btn: { type:"escape", text:"ما بعرف" } },
-    { q: "لو بتحبي عمر اضغطي على القلب 💗", btn: { type:"heart" } }
+    { q: "ماشي احطي التواريخ الصح وبعدين اضغطي القلب 🔐", btn: { type:"secret" } }
   ];
 
   let stepIndex = 0;
@@ -3596,6 +3936,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function setQuestionFocus(active){
     document.body.classList.toggle("question-focus", !!active);
+    if(active) document.body.classList.add("quiz-started");
   }
 
   setQuestionFocus(false);
@@ -3830,6 +4171,38 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    if(s.btn.type === "secret"){
+      qSmall.textContent = "احطي التواريخ الصح عشان يطلع القلب 🔐";
+      answerArea.innerHTML = "";
+      const sec = document.getElementById("secretSection");
+      if(sec) sec.style.display = "block";
+      window._showSecretHeart = function(){
+        qText.textContent = "لو بتحبي عمر اضغطي القلب 💗";
+        qSmall.textContent = "اضغطي القلب عشان تكملي ✨";
+        answerArea.innerHTML = `
+          <div class="heartBtn" id="heartBtn" role="button" aria-label="زر قلب">
+            <span class="heartIcon">💗</span>
+            <span>اضغطي على القلب</span>
+          </div>
+        `;
+        const hb = document.getElementById("heartBtn");
+        if(hb){
+          hb.addEventListener("click", ()=>{
+            beep("heart");
+            playPartyPop();
+            vibrate("party");
+            hb.classList.add("pressed");
+            showToast("لحظة... 💗");
+            heartRain();
+            burst();
+            setTimeout(window.openCakeStage, 900);
+          });
+        }
+        setTimeout(()=> answerArea.scrollIntoView({behavior:"smooth", block:"center"}), 200);
+      };
+      return;
+    }
+
     if(s.btn.type === "heart"){
       qSmall.textContent = "هذا آخر شي… اضغطي القلب عشان نكمل للمفاجأة ✨";
       answerArea.innerHTML = `
@@ -3841,19 +4214,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const heartBtn = $("heartBtn");
       if(heartBtn){
         const openEnvelopeFlow = ()=>{
-          const quizBox = $("quizBox");
-          setQuestionFocus(false);
-          if(quizBox) quizBox.style.display = "none";
-          // أظهر الرسالة السرية أولاً — هي اللي ستفتح التهنئة
-          const sec = document.getElementById("secretSection");
-          if(sec){
-            sec.style.display = "block";
-            showToast("في رسالة سرية إلك 🔐✨", 2000);
-            setTimeout(()=> sec.scrollIntoView({behavior:"smooth", block:"start"}), 150);
-          }
+          // الكيكة تفتح بعد القلب مباشرة
         };
 
-        const openCakeStage = ()=>{
+        window.openCakeStage = ()=>{
           let overlay = document.getElementById("cakeStageOverlay");
           if(!overlay){
             overlay = document.createElement("div");
@@ -3930,7 +4294,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 overlay.classList.remove("show");
                 setTimeout(()=>{
                   overlay.remove();
-                  openEnvelopeFlow();
+                  // بعد الكيكة: التهنئة مباشرة
+                  setQuestionFocus(false);
+                  const quizBox2 = document.getElementById("quizBox");
+                  const secEl = document.getElementById("secretSection");
+                  if(quizBox2) quizBox2.style.display = "none";
+                  if(secEl) secEl.style.display = "none";
+                  const giftBox = document.getElementById("giftBox");
+                  const giftText = document.getElementById("giftText");
+                  if(giftBox){
+                    giftBox.style.display = "block";
+                    giftBox.classList.add("fromEnvelope");
+                    if(giftText) typeWriter(giftText, message, 3);
+                    showToast("وصلتي للتهنئة 💖", 2000);
+                    setTimeout(()=> giftBox.scrollIntoView({behavior:"smooth", block:"start"}), 200);
+                  }
                 }, 320);
               }, 520);
             });
@@ -3944,7 +4322,7 @@ document.addEventListener("DOMContentLoaded", () => {
           heartBtn.classList.add("pressed");
           showToast("لحظة... 💗");
           burst();
-          setTimeout(openCakeStage, 900);
+          setTimeout(window.openCakeStage, 900);
         });
       }
       return;
@@ -4064,15 +4442,8 @@ document.addEventListener("DOMContentLoaded", () => {
               setTimeout(()=> secretReveal.classList.remove("typed"), 600);
               // بعد ما تخلص الرسالة السرية — افتح التهنئة الكاملة تلقائياً
               setTimeout(()=>{
-                const giftBox = document.getElementById("giftBox");
-                const giftText = document.getElementById("giftText");
-                if(giftBox){
-                  giftBox.style.display = "block";
-                  giftBox.classList.add("fromEnvelope");
-                  if(giftText) typeWriter(giftText, message, 3);
-                  showToast("وصلتي للتهنئة 💖", 2000);
-                  setTimeout(()=> giftBox.scrollIntoView({behavior:"smooth", block:"start"}), 200);
-                }
+                // بعد الرسالة السرية: يطلع القلب
+                if(typeof window._showSecretHeart === "function") window._showSecretHeart();
               }, 2800);
             }
           }, 14);
@@ -5110,6 +5481,143 @@ document.addEventListener("DOMContentLoaded", () => {
 
     waves.classList.add("paused");
   }})();
+
+  // ===== Engineer Mode: عداد المعرفة + Progress + Analysis + Blueprint + الخزنة =====
+  (function engineerMode(){
+
+    // ----- عداد المعرفة -----
+    const knowEl = document.getElementById("knowCounter");
+    if(knowEl){
+      const start = new Date("2024-12-05T00:00:00");
+      function updateKnowledge(){
+        const now = new Date();
+        const diff = now - start;
+        const days  = Math.floor(diff / (1000*60*60*24));
+        const hours = Math.floor((diff / (1000*60*60)) % 24);
+        const mins  = Math.floor((diff / (1000*60)) % 60);
+        knowEl.textContent = days + " يوم | " + hours + " ساعة | " + mins + " دقيقة";
+      }
+      updateKnowledge();
+      setInterval(updateKnowledge, 1000);
+    }
+
+    // ----- Project Progress: أنيميشن شريط التقدم -----
+    const fillEl = document.getElementById("progressBarFill");
+    if(fillEl){
+      setTimeout(()=>{ fillEl.style.width = "75%"; }, 350);
+    }
+
+    // ----- System Analysis: فحص ثم عرض الإحصائيات بشكل بارات -----
+    const analysisBox = document.getElementById("analysisBox");
+    if(analysisBox){
+      setTimeout(()=>{
+        const stats = [
+          { label:"جمالها",   pct:100 },
+          { label:"دفاها",    pct:96  },
+          { label:"ضحكتها",   pct:99  },
+          { label:"تأثيرها",  pct:100 },
+          { label:"حبي الها", pct:100 },
+        ];
+        let html = '<span class="ttl">[ SYSTEM ANALYSIS ]</span>\n';
+        stats.forEach(s=>{
+          const filled = Math.floor(s.pct/10);
+          const bar = "█".repeat(filled) + "░".repeat(10-filled);
+          html += '<span class="lbl">' + s.label + '</span> [' + bar + '] ' + s.pct + '%\n';
+        });
+        html += '<span class="ok">🎀 HELLO KITTY APPROVED</span>';
+        analysisBox.innerHTML = html;
+      }, 1300);
+    }
+
+    // ----- Blueprint Map: محطات قابلة للضغط -----
+    const bpDetails = {
+      start:    "🌹 البداية: أول مرة بدأت القصة من دمشق... من هنا انطلق كل شي.",
+      know:     "🎀 معرفة: من 5 ديسمبر 2024 — صرت دمشقيتي وصرت جزء من يومي.",
+      moments:  "💗 مواقف: كل موقف مرّ فينا زاد ثقتنا ببعض، حتى الصعب منه.",
+      memories: "🎞️ ذكريات: كل لحظة سجلناها صارت جزء من القصة وما تُنسى.",
+      future:   "🔭 مستقبل: كل خططي القادمة... وانتِ يا لولي بقلب كل واحدة منها 💗",
+    };
+    document.querySelectorAll(".bpNode").forEach(node=>{
+      node.addEventListener("click", ()=>{
+        document.querySelectorAll(".bpNode").forEach(n=> n.classList.remove("active"));
+        node.classList.add("active");
+        const detail = document.getElementById("bpDetail");
+        if(detail) detail.textContent = bpDetails[node.dataset.key] || "";
+      });
+    });
+
+    // ----- Vault -----
+    const vaultBtn    = document.getElementById("vaultBtn");
+    const vaultPass   = document.getElementById("vaultPass");
+    const vaultMsg    = document.getElementById("vaultMsg");
+    const vaultReveal = document.getElementById("vaultReveal");
+    if(vaultBtn){
+      // كلمة السر: HelloKitty (بدون حساسية لحالة الأحرف أو المسافات)
+      function checkVaultPass(raw){
+        const norm = raw.trim().toLowerCase().replace(/\s+/g, "");
+        const normAr = raw.trim().replace(/\s+/g, "");
+        return norm === "hellokitty"
+          || normAr === "دمشقيتي"
+          || normAr === "عموري"
+          || normAr === "هيلوكيتي"
+          || normAr === "عموركيتي";
+      }
+
+      const vaultMsgText = "🎀 الخزنة انفتحت يا لولي:\nمن دمشق لقلبي... ما في مسافة بتوقف حبي الك.\nانتِ دمشقيتي وبتضلي كذلك 💗🌹";
+
+      vaultBtn.addEventListener("click", ()=>{
+        const v = vaultPass.value || "";
+        if(checkVaultPass(v)){
+          vaultMsg.textContent = "تم فتح الخزنة ✨";
+          vaultMsg.style.color = "#9cffb0";
+          beep("heart");
+          burst();
+
+          if(vaultReveal && !vaultReveal.classList.contains("show")){
+            vaultReveal.classList.add("show");
+            vaultReveal.textContent = "";
+            let i = 0;
+            const iv = setInterval(()=>{
+              vaultReveal.textContent += vaultMsgText[i] ?? "";
+              i++;
+              if(i > vaultMsgText.length){
+                clearInterval(iv);
+                // بعد الرسالة السرية — أظهر مرحلة الكيكة
+                setTimeout(()=>{
+                  if(typeof window.openCakeStage === "function") window.openCakeStage();
+                  else {
+                    // fallback: show giftBox directly
+                    const gb = document.getElementById("giftBox");
+                    const gt = document.getElementById("giftText");
+                    if(gb){ gb.style.display = "block"; if(gt) typeWriter(gt, message, 3); }
+                    gb?.scrollIntoView({behavior:"smooth", block:"start"});
+                  }
+                }, 1200);
+              }
+            }, 18);
+          }
+
+          // فتح المرحلة القادمة في Project Progress
+          const nextIcon = document.getElementById("nextPhaseIcon");
+          const nextHint = document.getElementById("nextPhaseHint");
+          if(nextIcon && nextIcon.textContent === "🔒"){
+            nextIcon.textContent = "🔓";
+            if(nextHint){
+              nextHint.style.display = "block";
+              nextHint.textContent = "🔓 تم كشف المرحلة القادمة: نبني مستقبل أحلى... وانتِ شريكتي بكل خطوة فيه 💗";
+            }
+          }
+        } else {
+          vaultMsg.textContent = "كلمة المرور خطأ 🔐";
+          vaultMsg.style.color = "#ff9bcb";
+          beep("escape");
+        }
+      });
+      vaultPass.addEventListener("keydown", (e)=>{
+        if(e.key === "Enter") vaultBtn.click();
+      });
+    }
+  })();
 });
 </script>
 </body>
