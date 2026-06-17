@@ -3219,7 +3219,7 @@ body.question-focus .quizStage{
 
 
     <!-- ===== الرسالة السرية ===== -->
-    <div class="secretSection" id="secretSection">
+    <div class="secretSection" id="secretSection" style="display:none">
       <div class="secretTitle">🔐 رسالة سرية — إذا كنتي تعرفي 👀</div>
 
       <!-- المرحلة الأولى: تاريخ الميلاد -->
@@ -3356,6 +3356,15 @@ body.question-focus .quizStage{
         <div class="ageUnit"><div class="ageNum" id="ac-h">0</div><div class="ageLabel">ساعة</div></div>
         <div class="ageUnit"><div class="ageNum" id="ac-m">0</div><div class="ageLabel">دقيقة</div></div>
         <div class="ageUnit"><div class="ageNum" id="ac-s">0</div><div class="ageLabel">ثانية</div></div>
+      </div>
+    </div>
+
+    <!-- عداد المعرفة — من متى صار عندي دمشقيتي -->
+    <div class="ageClock preQuizHidden" id="knowCounterWrap" style="opacity:1;transform:none; margin-top:10px;">
+      <div class="ageClockTitle">🎀 كم صار من لما عرفت دمشقيتي؟</div>
+      <div class="knowCounterBox" style="margin-top:8px;">
+        <div id="knowCounterMain">...</div>
+        <div class="knowCounterSub">من 5 ديسمبر 2024</div>
       </div>
     </div>
 
@@ -3924,7 +3933,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     { q: "🔥 بتحبي عمر ولا لا؟", btn: { type:"normal", text:"هاااااااااا؟" } },
     { q: "😾 شووووو هاااااا بتحبي عمر ولا لا؟", btn: { type:"escape", text:"ما بعرف" } },
-    { q: "ماشي احطي التواريخ الصح وبعدين اضغطي القلب 🔐", btn: { type:"secret" } }
+    { q: "لو بتحبي عمر اضغطي على القلب 💗", btn: { type:"heart" } }
   ];
 
   let stepIndex = 0;
@@ -4171,38 +4180,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    if(s.btn.type === "secret"){
-      qSmall.textContent = "احطي التواريخ الصح عشان يطلع القلب 🔐";
-      answerArea.innerHTML = "";
-      const sec = document.getElementById("secretSection");
-      if(sec) sec.style.display = "block";
-      window._showSecretHeart = function(){
-        qText.textContent = "لو بتحبي عمر اضغطي القلب 💗";
-        qSmall.textContent = "اضغطي القلب عشان تكملي ✨";
-        answerArea.innerHTML = `
-          <div class="heartBtn" id="heartBtn" role="button" aria-label="زر قلب">
-            <span class="heartIcon">💗</span>
-            <span>اضغطي على القلب</span>
-          </div>
-        `;
-        const hb = document.getElementById("heartBtn");
-        if(hb){
-          hb.addEventListener("click", ()=>{
-            beep("heart");
-            playPartyPop();
-            vibrate("party");
-            hb.classList.add("pressed");
-            showToast("لحظة... 💗");
-            heartRain();
-            burst();
-            setTimeout(window.openCakeStage, 900);
-          });
-        }
-        setTimeout(()=> answerArea.scrollIntoView({behavior:"smooth", block:"center"}), 200);
-      };
-      return;
-    }
-
     if(s.btn.type === "heart"){
       qSmall.textContent = "هذا آخر شي… اضغطي القلب عشان نكمل للمفاجأة ✨";
       answerArea.innerHTML = `
@@ -4214,7 +4191,22 @@ document.addEventListener("DOMContentLoaded", () => {
       const heartBtn = $("heartBtn");
       if(heartBtn){
         const openEnvelopeFlow = ()=>{
-          // الكيكة تفتح بعد القلب مباشرة
+          const quizBox = $("quizBox");
+          setQuestionFocus(false);
+          if(quizBox) quizBox.style.display = "none";
+          const sec = document.getElementById("secretSection");
+          if(sec){
+            sec.style.display = "block";
+            showToast("قبل التهنئة... في رسالة سرية 🤫", 2000);
+            setTimeout(()=> sec.scrollIntoView({behavior:"smooth", block:"start"}), 300);
+          } else {
+            const giftBox = $("giftBox");
+            const giftText = $("giftText");
+            if(giftBox) giftBox.style.display = "block";
+            if(giftText) typeWriter(giftText, message, 3);
+            showToast("وصلتي للتهنئة 💖");
+            giftBox?.scrollIntoView({behavior:"smooth", block:"start"});
+          }
         };
 
         window.openCakeStage = ()=>{
@@ -4294,21 +4286,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 overlay.classList.remove("show");
                 setTimeout(()=>{
                   overlay.remove();
-                  // بعد الكيكة: التهنئة مباشرة
-                  setQuestionFocus(false);
-                  const quizBox2 = document.getElementById("quizBox");
-                  const secEl = document.getElementById("secretSection");
-                  if(quizBox2) quizBox2.style.display = "none";
-                  if(secEl) secEl.style.display = "none";
-                  const giftBox = document.getElementById("giftBox");
-                  const giftText = document.getElementById("giftText");
-                  if(giftBox){
-                    giftBox.style.display = "block";
-                    giftBox.classList.add("fromEnvelope");
-                    if(giftText) typeWriter(giftText, message, 3);
-                    showToast("وصلتي للتهنئة 💖", 2000);
-                    setTimeout(()=> giftBox.scrollIntoView({behavior:"smooth", block:"start"}), 200);
-                  }
+                  openEnvelopeFlow();
                 }, 320);
               }, 520);
             });
@@ -4442,8 +4420,14 @@ document.addEventListener("DOMContentLoaded", () => {
               setTimeout(()=> secretReveal.classList.remove("typed"), 600);
               // بعد ما تخلص الرسالة السرية — افتح التهنئة الكاملة تلقائياً
               setTimeout(()=>{
-                // بعد الرسالة السرية: يطلع القلب
-                if(typeof window._showSecretHeart === "function") window._showSecretHeart();
+                const giftBox = document.getElementById("giftBox");
+                const giftText = document.getElementById("giftText");
+                if(giftBox){
+                  giftBox.style.display = "block";
+                  if(giftText) typeWriter(giftText, message, 3);
+                  showToast("وصلتي للتهنئة 💖", 2000);
+                  setTimeout(()=> giftBox.scrollIntoView({behavior:"smooth", block:"start"}), 200);
+                }
               }, 2800);
             }
           }, 14);
@@ -5482,10 +5466,28 @@ document.addEventListener("DOMContentLoaded", () => {
     waves.classList.add("paused");
   }})();
 
+  // ===== عداد المعرفة المستقل =====
+  (function knowCounterStandalone(){
+    const mainEl = document.getElementById("knowCounterMain");
+    if(!mainEl) return;
+    const start = new Date("2024-12-05T00:00:00");
+    function update(){
+      const now = new Date();
+      const diff = now - start;
+      const days  = Math.floor(diff / (1000*60*60*24));
+      const hours = Math.floor((diff / (1000*60*60)) % 24);
+      const mins  = Math.floor((diff / (1000*60)) % 60);
+      const secs  = Math.floor((diff / 1000) % 60);
+      mainEl.textContent = days + " يوم | " + hours + " ساعة | " + mins + " دقيقة | " + secs + " ثانية";
+    }
+    update();
+    setInterval(update, 1000);
+  })();
+
   // ===== Engineer Mode: عداد المعرفة + Progress + Analysis + Blueprint + الخزنة =====
   (function engineerMode(){
 
-    // ----- عداد المعرفة -----
+    // ----- عداد المعرفة (داخل Engineer Mode) -----
     const knowEl = document.getElementById("knowCounter");
     if(knowEl){
       const start = new Date("2024-12-05T00:00:00");
